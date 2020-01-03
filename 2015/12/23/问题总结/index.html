@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://koterwong.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="技术点：Android四大组件Activity谈谈你对Activity生命周期的理解?首先，为什么Activity要有生命周期呢？我觉得这是移动设备的硬件特性和交互特性决定的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android面试问题总结">
+<meta property="og:url" content="http://koterwong.top/2015/12/23/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Koterwong的随笔">
+<meta property="og:description" content="技术点：Android四大组件Activity谈谈你对Activity生命周期的理解?首先，为什么Activity要有生命周期呢？我觉得这是移动设备的硬件特性和交互特性决定的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://7xvkm8.com1.z0.glb.clouddn.com/AndroidIPC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.png">
+<meta property="article:published_time" content="2015-12-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-01-03T12:58:25.848Z">
+<meta property="article:author" content="Koterwong">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://7xvkm8.com1.z0.glb.clouddn.com/AndroidIPC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.png">
+
+<link rel="canonical" href="http://koterwong.top/2015/12/23/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Android面试问题总结 | Koterwong的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Koterwong的随笔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://koterwong.top/2015/12/23/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Koterwong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Koterwong的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android面试问题总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-12-23 00:00:00" itemprop="dateCreated datePublished" datetime="2015-12-23T00:00:00+08:00">2015-12-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="技术点：Android四大组件"><a href="#技术点：Android四大组件" class="headerlink" title="技术点：Android四大组件"></a>技术点：Android四大组件</h2><h3 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h3><h5 id="谈谈你对Activity生命周期的理解"><a href="#谈谈你对Activity生命周期的理解" class="headerlink" title="谈谈你对Activity生命周期的理解?"></a>谈谈你对Activity生命周期的理解?</h5><p>首先，为什么Activity要有生命周期呢？我觉得这是移动设备的硬件特性和交互特性决定的。</p>
+<a id="more"></a>
+
+<p>首先从硬件上来说，移动设备不像是PC平台，它的CPU、内存、电量都受到了限制，特别是电量，你必须要保证开发出的App既能够满足用户需求，又不能很随意的去使用CPU进行高密度计算工作，所以如果用户临时不使用App的时候，要有一个机制来告诉我们开发的App：用户现在暂时不用了，不要做一些影响用户使用其他功能的事情。</p>
+<p>除了电量之外，内存也是一个需要考虑的因素，Android基于Java开发，所以也有Java语言的一些特性，比如说在内存管理上，使用垃圾回收器来自动回收内存，虽然说减轻了开发者的工作量，但是GC发生的时间是不确定的，所以你不能够很好的保证用户使用App的时候，是否有足够的内存来分配对象。</p>
+<p>除了硬件特性之外，手机这种设备的交互特性（比如屏幕大小、触摸操作），决定了你顶多只有一个App的界面会在前台，所以说，要有这样一个机制来告诉开发者：我们的App现在不在前台和用户交互了，优先级没有那么高，在后台不能做一些占用CPU和内存的事情影响到前台App的用户使用。</p>
+<p>而解决这些问题的一个机制，就是Activity的生命周期。我们可以在onStop()发生的时候，暂停CPU密集运算、取消正在进行的网络连接、停止轮播图、退出死循环、去掉动画等一些列操作，来保证正在和用户交互的Activity拥有更多的硬件资源，来完成相关工作。</p>
+<p>其次，从架构设计的角度来说，这也是一种很有效也很成熟的管理方式。其实不光Android上有生命周期，在网页开发中也会有生命周期，那么这种生命周期的方法有什么好处呢？</p>
+<p>其实这种生命周期的方法，属于一种设计模式——模板设计模式。我认为，模板设计模式的实质，就是为了确定流程，而对每个流程的具体实现并不关心，你只要按照我这个顺序走就OK了，具体你想做什么，自己去实现吧！我们再来看一下Android，Activity是用来显示界面的，而显示界面的功能无非下面几个问题：</p>
+<ol>
+<li>要显示那个界面？</li>
+<li>界面里面的元素有什么行为？</li>
+<li>界面被部分遮挡住怎么办？</li>
+<li>界面看不见，被销毁怎么办？</li>
+</ol>
+<p>我们在对应的看一下Activity的简单(无onRestart())生命周期：</p>
+<ol>
+<li>onCreate()，通过setContentView()设置要显示哪个界面，并定义界面元素的行为(设置点击事件等)</li>
+<li>onStart()，一般很少处理</li>
+<li>onResume()，界面即将可见，在这之后用户就可以与界面交互了，在这里可以注册一些接收者</li>
+<li>onPause()，界面即将不可见或者是部分可见，在这里可以注销接受者</li>
+<li>onStop()，界面不可见，我们可以取消轮播图的滚动</li>
+<li>onDestory()，Activity即将销毁，我们要做好对象回收，避免内存泄露</li>
+</ol>
+<p>所以说，我们只要按照每一个生命周期的方法，完成对应的工作，就可以让我们的Activity完整的显示出来。我们不需要考虑界面怎么画出来，点击事件怎么传递到按钮上去的，销毁回收工作是如何进行的，简简单单的完成生命周期的方法，就可以实现我们想要的效果。这就像是模板方法的典型应用场景——算法实现——所要达到的效果。我就想查找一个数，我定义一个方法给子类去重写，子类具体是二分法查找还是快速排序查找，我都不关心，你只要给我找出这个数，我就能按照流程完成相应的工作。对比一下你就会发现，这两者没有本质上的差别。</p>
+<p>所以说，从手机设备的硬件特性、交互形式、架构设计来说，Activity的生命周期都是非常合适，而且非常必要的！</p>
+<h5 id="Activity的跳转要执行那些声明周期方法？"><a href="#Activity的跳转要执行那些声明周期方法？" class="headerlink" title="Activity的跳转要执行那些声明周期方法？"></a>Activity的跳转要执行那些声明周期方法？</h5><p>   假设有两个activity，当旧Activity跳转到新的Activity时，大致分为一下三种情况：</p>
+<ul>
+<li>启动后旧的Activity调用了<code>finish()</code>方法，那么先调用旧Activity的onPause方法，然后调用新的Activity的onCreate-&gt;onStart-&gt;onResume方法，最后调用旧Activity的onStop-&gt;onDestory方法。</li>
+<li>启动后没有调用<code>finish()</code>方法，那么旧Activity会调用onPause-&gt;onSaveInstanceState-&gt;onStop方法，onDestory方法不会被调用。</li>
+<li>如果新的Activity为透明或则对话框的格式，那么旧<code>onPause()</code>、<code>onSaveInstanceState()</code>，不会调用onStop方法。</li>
+</ul>
+<p>Activity声明周期需要注意的点：</p>
+<p>如果应用长时间处于stopped状态并且此时系统内存极为紧张的时候，系统就会回收Activity，此时系统在回收之前会回调<code>onSaveInstanceState</code>方法来保存应用的数据Bundle。当该Activity重新创建的时候，保存的Bundle数据就会传递到<code>onRestoreInstanceState</code>方法和<code>onCreate</code>方法中，这就是<code>onCreate</code>方法中<code>Bundle savedInstanceState</code>参数的来源。</p>
+<p><strong>onSaveInstanceState方法和onRestoreInstanceState方法“不一定”是成对的被调用的。</strong>onSaveInstanceState的调用遵循一个重要原则，即当系统“未经你许可”时销毁了你的activity，则onSaveInstanceState会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据。onRestoreInstanceState被调用的前提是，activity“确实”被系统销毁了，而如果仅仅是停留在有这种可能性的情况下，则该方法不会被调用，例如，当正在显示activity的时候，用户按下HOME键回到主界面，然后用户紧接着又返回到activity，这种情况下activity一般不会因为内存的原因被系统销毁，故activity的onRestoreInstanceState方法不会被执行。</p>
+<h5 id="两个Activity之间怎么传递数据？"><a href="#两个Activity之间怎么传递数据？" class="headerlink" title="两个Activity之间怎么传递数据？"></a>两个Activity之间怎么传递数据？</h5><ul>
+<li>传递基本数据类型，数组，List集合。需要注意的是List集合元素需要实现Parceable。    </li>
+<li>传递Bundle对象，Bundle类似HashMap，但是更加高效。</li>
+<li>传递对象:<br>1、Java的Serializable(序列化和反序列化要进行大量IO操作，耗时)。<br>2、Android的Parcelable接口(使用麻烦，但是效率更高，Android使用这种方式)</li>
+<li>文件/网络数据<br>intent.setData(Uri) 。例如：Uri.fromFile();  //大图片的传递</li>
+</ul>
+<h5 id="横竖屏切换时候Activity的生命周期"><a href="#横竖屏切换时候Activity的生命周期" class="headerlink" title="横竖屏切换时候Activity的生命周期?"></a>横竖屏切换时候Activity的生命周期?</h5><p>如果没有横竖屏切换的需求，可以设置始终竖屏<code>android:screenOrientation=&quot;portrait&quot;</code></p>
+<ul>
+<li>a. 不设置Activity的android:configChanges时，切屏会重新调用各个生命周期。</li>
+<li>b. 设置android:configChanges=”orientation|screenSize”时，切屏不会重新调用各个生命周期，只会执行onConfigurationChanged方法。一般适用于全屏播放视频。</li>
+</ul>
+<h5 id="如何退出Activity？如何安全退出已调用多个Activity的Application？"><a href="#如何退出Activity？如何安全退出已调用多个Activity的Application？" class="headerlink" title="如何退出Activity？如何安全退出已调用多个Activity的Application？"></a>如何退出Activity？如何安全退出已调用多个Activity的Application？</h5><ul>
+<li><p>抛异常强制退出：该方法通过抛异常，使程序Force Close。 </p>
+<p>android.os.Process.killProcess(android.os.Process.myPid());</p>
+</li>
+<li><p>记录打开的Activity：每打开一个Activity，就记录下来。在需要退出时，关闭每一个Activity即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Activity&gt; lists = <span class="keyword">new</span> LinkedList&lt;Activity&gt;();</span><br><span class="line">onResume()&#123;</span><br><span class="line"> 	lists.add(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line">onDestory()&#123;</span><br><span class="line">	lists.remove(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line">kill()&#123;</span><br><span class="line"> 	<span class="keyword">for</span>(Activity activity: lists)	&#123;</span><br><span class="line">		activity.finish();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发送特定广播</p>
+</li>
+</ul>
+<h3 id="service"><a href="#service" class="headerlink" title="service"></a>service</h3><h5 id="Android启动Service的两种方式是什么-它们的适用情况是什么"><a href="#Android启动Service的两种方式是什么-它们的适用情况是什么" class="headerlink" title="Android启动Service的两种方式是什么? 它们的适用情况是什么"></a>Android启动Service的两种方式是什么? 它们的适用情况是什么</h5><ul>
+<li>startService：生命周期与调用者不同。启动后若调用者未调用stopService而直接退出，Service仍会运行</li>
+<li>bindService：生命周期与调用者绑定，调用者一旦退出，Service就会调用unBind-&gt;onDestroy</li>
+</ul>
+<h5 id="什么是IntentService？有何优点？"><a href="#什么是IntentService？有何优点？" class="headerlink" title="什么是IntentService？有何优点？"></a>什么是IntentService？有何优点？</h5><p>IntentService是Service类的子类，用来处理异步请求。客户端可以通过startService(Intent)方法启动服务。（内部使用Handler和HandlerThread来实现）</p>
+<ul>
+<li>必须实现一个无参数构造函数</li>
+</ul>
+<ul>
+<li>onHandleIntent()运行在子线程中</li>
+</ul>
+<ul>
+<li>如果IntentService 被start了多次，onHandleIntent()方法将排队执行多次。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">含有抽象方法，onHandleIntent。可以处理异步操作</span><br><span class="line"><span class="meta">@WorkerThread</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onHandleIntent</span> <span class="params">(Intent intent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>案例1：客户端上传图片，上传完成发送广播完成信息反馈。</p>
+<h3 id="contentProvider"><a href="#contentProvider" class="headerlink" title="contentProvider"></a>contentProvider</h3><h5 id="ContentProvider是如何实现数据共享的。"><a href="#ContentProvider是如何实现数据共享的。" class="headerlink" title="ContentProvider是如何实现数据共享的。"></a>ContentProvider是如何实现数据共享的。</h5><blockquote>
+<p> ContentResolver: 当一个程序需要把数据暴露给其它程序时，就可以使用contentProvider实现。其他程序可用过contentResolver来操作contentProvider暴露的数据。<br> 其它程序访问本程序的数据，无需关心程序时候启动。都能实现对暴露数据的增删改查。<br> ContentProvider以Uri的形式暴露数据。其他程序使用Uri即可操作指定数据。<br> 步骤：</p>
+</blockquote>
+<ol>
+<li>定义自己的ContentProvider类，该类需要继承Android提供的ContentProvider基类。</li>
+<li>在AndroidManifest.xml文件中注册个ContentProvider，注册ContenProvider时需要为它绑定一个URL。例如：<code>android:authorities=&quot;com.myit.providers.MyProvider&quot;</code>authorities属性指定的Uri。</li>
+<li>接下就是获取这些数据了，Context提供了如下方法来获取ContentResolver对象。一般来说，ContentProvider是单例模式，当多个应用程序通过ContentResolver来操作 ContentProvider提供的数据时，ContentResolver调用的数据操作将会委托给同一个ContentProvider处理。使用ContentResolver操作数据只需两步：<br>1、调用Activity的ContentResolver获取ContentResolver对象。<br>2、根据需要调用ContentResolver的insert()、delete()、update()和query（）方法操作数据即可。<h3 id="BroadCastReceiver"><a href="#BroadCastReceiver" class="headerlink" title="BroadCastReceiver"></a>BroadCastReceiver</h3></li>
+</ol>
+<h5 id="BroadCastReceiver的安全性，如何解决"><a href="#BroadCastReceiver的安全性，如何解决" class="headerlink" title="BroadCastReceiver的安全性，如何解决 ?"></a>BroadCastReceiver的安全性，如何解决 ?</h5><p>BroadCastReceiver的设计初衷是为全局考虑的，可以方便应用程序和系统、应用程序之间、应用程序内的通信，所以对单个应用程序而言BroadcastReceiver是存在安全性问题的，相应问题及解决如下：</p>
+<ol>
+<li><p>作为发送广播方：可以通过<code>sendBroadcast(Intent, String)</code>指定接受者的权限，或者<code>intent.setPackage()指定在某个应用中有效。</code></p>
+</li>
+<li><p>作为接受者：动态注册可以通过<code>registerReceiver(receiver, intentFilter, String, android.os.Handler)</code>的接口指定发送者必须具备的permission。</p>
+<p>静态注册可以通过<code>android:exported=&quot;false&quot;</code>不接受其他程序的广播。</p>
+</li>
+<li><p>使用<code>LocalBroadcastManager</code>只在本程序内生效，必须动态注册。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mLocalBroadcastManager = LocalBroadcastManager.getInstance(<span class="keyword">this</span>);  </span><br><span class="line">mLocalBroadcastManager.registerReceiver(mReceiver, filter);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="广播注册的两种方式"><a href="#广播注册的两种方式" class="headerlink" title="广播注册的两种方式"></a>广播注册的两种方式</h5><p>Android中有两种广播的注册方式：1、静态注册：AndroidManifest.xml配置文件中；2、动态注册：Java代码；静态注册适用于全局广播；动态注册适用于局部广播；</p>
+<p>补充一点：有些广播只能通过动态方式注册，比如时间变化事件、屏幕亮灭事件、电量变更事件，因为这些事件触发频率通常很高，如果允许后台监听，会导致进程频繁创建和销毁，从而影响系统整体性能。</p>
+<h3 id="Context的理解、Application的理解"><a href="#Context的理解、Application的理解" class="headerlink" title="Context的理解、Application的理解"></a>Context的理解、Application的理解</h3><p>Context是维持Android程序中各组件能够正常工作的一个核心功能类。<br><a href="http://blog.csdn.net/qinjuning/article/details/7310620" target="_blank" rel="noopener">Android中Context详解</a><br><a href="http://www.jianshu.com/p/94e0f9ab3f1d" target="_blank" rel="noopener">Context到底是什么？</a><br><a href="http://blog.csdn.net/guolin_blog/article/details/47028975" target="_blank" rel="noopener">Android Context完全解析，你所不知道的Context的各种细节</a><br><a href="http://zmywly8866.github.io/2014/12/26/android-do-not-store-data-in-the-application-object.html" target="_blank" rel="noopener">不要在Android的Application对象中缓存数据!</a></p>
+<h5 id="谈谈对Application的理解"><a href="#谈谈对Application的理解" class="headerlink" title="谈谈对Application的理解"></a>谈谈对Application的理解</h5><p>其实说对什么的理解，就是考察你对这个东西会不会用，重点是有没有什么坑！</p>
+<p>首先，Application在一个Dalvik虚拟机里面只会存在一个实例，所以你不要傻傻的去弄什么单例模式，来静态获取Application了，你把Application构造函数设置成privete都不可能实现(我年轻的时候就这么傻傻的试过，想着如果可以通过<code>Singleton.getInstance()</code>就能获取到Application对象，多爽呀~)。</p>
+<p>那么为什么强调说是一个Dalvik虚拟机，而不是说一个App呢？</p>
+<p>因为一个App有可能有多个Dalvik虚拟机，也就是传说中的多进程模式。在这种模式下，每一个Dalvik都会存在一个Application实例，他们之间没有关系，在A进程Application里面保存的数据不能在B进程的Application获取，因为他们根本不是一个对象，而且被隔离在了两个进程里面，所以这里强调是一个Dalvik虚拟机，而不是一个App。</p>
+<p>其次，Application的实质是一个Context，它继承自ContextWrapper。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">android.content.Context</span><br><span class="line">	   ↳	android.content.ContextWrapper</span><br><span class="line">	   	↳	android.app.Application</span><br></pre></td></tr></table></figure>
+
+<p>ContextWrapper是什么玩意？就是对Context的一个包装而已。</p>
+<p>Application有两个子类，一个是MultiDexApplication，如果你遇到了”65535”问题，可以选择继承自他，完成多Dex打包配置的相关工作。</p>
+<p>另外一个是在TDD(测试用例驱动)开发模式中使用Moke进行测试的时候用到的，可以来代替Application的Moke类MockApplication。</p>
+<p>在应用启动的时候，会首先调用<code>Application.attach()</code>，当然，这个方法是隐藏的，开发者能接触到的第一个被调用的方法其实是<code>Application.onCreate()</code>，我们通常会在这个方法里面完成各种初始化，比如图片加载库、Http请求库的默认配置初始化操作等等。但是最好别在这个方法里面进行太多耗时操作，因为这会影响App的启动速度，所以对于不必要的操作可以使用异步操作、懒加载、延时加载等策略来减少对UI线程的影响。</p>
+<p>除此之外，由于在Context中可以通过getApplicationContext()获取到Application对象，或者是通过<code>Activity.getApplication()</code>、<code>Service.getApplication()</code>获取到Application，所以可以在Application保存全局的数据，供所有的Activity或者是Service使用。</p>
+<p>PS：使用上面的三种方法获取到的都是同一个Application对象，getApplicationContext()是在Context的实现类ContextImpl中具体实现的，而getApplication()则是在Activity和Service中单独实现的，所以他们的作用域不同，但是获取到的都是同一个Application对象，因为一个Dalvik虚拟机只有一个Application对象。</p>
+<p>但是这里存在着一个坑，那就是在低内存情况下，Application有可能被销毁，从而导致保存在Application里面的数据信息丢失，最后程序错乱，甚至是Crash。</p>
+<p>所以当你想在Application保存数据的时候，请做好为空判断，或者是选择其他方式保存你的数据信息。</p>
+<p>另外，在Application中存在着几个有用的方法，比如onLowMemory()和onTrimMemory()，在这两个方法里面，我们可以实现自己的内存回收逻辑，比如关闭数据库连接、移除图片内存缓存等操作来降低内存消耗，从而降低被系统回收的风险。</p>
+<p>最后，就是要注意Application的生命周期，他和Dalvik虚拟机生命周期一样长，所以在进行单例或者是静态变量的初始化操作时，一定要用Application作为Context进行初始化，否则会造成内存泄露的发生。使用Dialog的时候一般使用Activity作为Context，但是也可以使用Application作为上下文，前提是你必须设置Window类型为TYPE_SYSTEM_DIALOG，并且申请相关权限。这个时候弹出的Dialog是属于整个Application的，弹出这个Dialog的Activity销毁时也不会回收Dialog，只有在Application销毁时，这个Dialog才会自动消失。</p>
+<h2 id="技术点：UI设计、屏幕适配、MD"><a href="#技术点：UI设计、屏幕适配、MD" class="headerlink" title="技术点：UI设计、屏幕适配、MD"></a>技术点：UI设计、屏幕适配、MD</h2><h5 id="关于Material-Design的介绍文章"><a href="#关于Material-Design的介绍文章" class="headerlink" title="关于Material Design的介绍文章"></a>关于Material Design的介绍文章</h5><p><a href="http://blog.csdn.net/eclipsexys/article/details/46349721" target="_blank" rel="noopener">AndroidSupportDesign使用详解</a></p>
+<p><a href="http://www.jianshu.com/p/1078568e859f" target="_blank" rel="noopener">Android Design Support Library 的代码实验</a></p>
+<h5 id="屏幕适配方案"><a href="#屏幕适配方案" class="headerlink" title="屏幕适配方案"></a>屏幕适配方案</h5><p>1、按照主流屏幕进行开发。主流屏幕包括720P和1280P这两种，在其他常用分辨率进行测试。<br>2、图片适配：为不同分 辨率制作切图mdpi:hdpi:xhdpi:xxhdpi:xxxdpi==2:3:4:6:8。但是一般在布局文件中直接把图片的宽高写死，然后设置scaleType。<br>3、布局适配：</p>
+<ul>
+<li>为不同分辨率写不同的布局文件。例如，layout-480×800专门480×800的屏幕。</li>
+<li>使用布局限定符：layout-large，适配平板设备（兼容版本3.2以前）。3.2版本以后layout-sw600dp ，最小宽度600dp的设备。</li>
+<li>版本适配，为不同系统版本写不同的布局文件。layout-v19</li>
+</ul>
+<p>4、使用dp、layout-weight（weightSum）</p>
+<p>5、在代码中动态设计View的宽高属性。</p>
+<h2 id="技术点：Androd数据存储和缓存策略"><a href="#技术点：Androd数据存储和缓存策略" class="headerlink" title="技术点：Androd数据存储和缓存策略"></a>技术点：Androd数据存储和缓存策略</h2><h5 id="缓存文件可以放在哪里？它们各自的特点是什么？"><a href="#缓存文件可以放在哪里？它们各自的特点是什么？" class="headerlink" title="缓存文件可以放在哪里？它们各自的特点是什么？"></a>缓存文件可以放在哪里？它们各自的特点是什么？</h5><p>在Android手机里面，缓存的位置分为两类，一类是Internal Storage，即内部存储，另外一类是External Storage，即外部存储。</p>
+<p>内部存储，总是可用的，默认只能被你的App单独访问，卸载时候 会把App的相关文件清楚干净，是保存不被用户看到和其他App访问的绝佳区域。</p>
+<ul>
+<li>getFileDir() 通过此方法可以获取到你的APP内部存储的文件，路径为/data/data/pacgage_name/files</li>
+<li>getCacheDir() 通过此方法可以获取到你的APP内部存储的文件，路径为/data/data/package_name/cache</li>
+<li>openFileOutput() 通过此方法，我们可以获取到一个输出流，输出流的保存路径是/data/data/package_name/files ，和getFileDir()的路径一致</li>
+</ul>
+<p>外部存储，并不一定是可用，因为用户可以选择把这部分作为USB存储模式，这样就不可以访问了。是大家都可以访问的，因此保存到这里的文件是失去访问控制权限的。当用户卸载你的app时，系统仅仅会删除external根目录（getExternalFilesDir()）下的相关文件。External是在你不需要严格的访问权限并且你希望这些文件能够被其他app所共享或者是允许用户通过电脑访问时的最佳存储区域。外部存储可分为两部分，私有存储和公共存储。</p>
+<ul>
+<li>私有存储<ul>
+<li>Context.getExternalCacheDir()</li>
+<li>Context.getExternalFilesDir()<br>创建的私有文件的地址是/sdcard/Android/date/package_name下面，Android文件夹是隐藏文件夹，用户无法操作。如果我们想缓存图片等比较耗空间的文件，推荐放在getExternalCacheDir()所在的文件下面，这个文件和getCacheDir()很像，都可以放缓存文件，在APP被卸载的时候，都会被系统删除，而且缓存的内容对其他APP是相对私有的。</li>
+</ul>
+</li>
+<li>公共存储<br>你的APP产生的文件不需要隐藏，即对用户是可见的，那么你可以把文件放在外部的公共存储文件下面。这个方法不是Context的方法，而是Environment的两个方法，第一个方法获取到的其实是外部存储的根目录，而第二个方法获取到得则是外部存储的公共目录。其实在访问权限上是没有区别的，不同点是getExternalStoragePublicDirectory()在运行的时候，会需要你带有一个特定的参数来指定这些public的文件类型，以便于与其他public文件进行分类。<ul>
+<li>Environment.getExternalStorageDirectory()  </li>
+<li>Environment.getExternalStoragePublicDirectory()  </li>
+</ul>
+</li>
+</ul>
+<p>表现</p>
+<ul>
+<li>内部存储<br>你的app的internal storage 目录是以你的app的包名作为标识存放在Android文件系统的特定目录下[data/data/com.example.xx]。 从技术上讲，如果你设置文件为可读的，那么其他app就可以读取你的internal文件。然而，其他app需要知道你的包名与文件名。若是你没有设置为可读或者可写，其他app是没有办法读写的。因此只要你使用MODE_PRIVATE ，那么这些文件就不可能被其他app所访问。<br>另外记住一点，内部存储在你的APP卸载的时候，会一块被删除，因此，我们可以在cache目录里面放置我们的图片缓存，而且cache与files的差别在于，如果手机的内部存储空间不够了，会自行选择cache目录进行删除，因此，不要把重要的文件放在cache文件里面，可以放置在files里面，因为这个文件只有在APP被卸载的时候才会被删除。还有要注意的一点是，如果应用程序是更新操作，内部存储不会被删除，区别于被用户手动卸载。</li>
+<li>外部存储<br>不管你是使用 getExternalStoragePublicDirectory() 来存储可以共享的文件，还是使用 getExternalFilesDir() 来储存那些对于你的app来说是私有的文件，有一点很重要，那就是你要使用那些类似DIRECTORY_PICTURES 的API的常量。那些目录类型参数可以确保那些文件被系统正确的对待。例如，那些以DIRECTORY_RINGTONES 类型保存的文件就会被系统的media scanner认为是ringtone而不是音乐。<h5 id="清除数据、清除缓存的区别"><a href="#清除数据、清除缓存的区别" class="headerlink" title="清除数据、清除缓存的区别"></a>清除数据、清除缓存的区别</h5>清除数据主要是清除用户配置，比如SharedPreferences、数据库等等，这些数据都是在程序运行过程中保存的用户配置信息，清除数据后，下次进入程序就和第一次进入程序时一样</li>
+</ul>
+<p>缓存是程序运行时的临时存储空间，它可以存放从网络下载的临时图片，从用户的角度出发清除缓存对用户并没有太大的影响，但是清除缓存后用户再次使用该APP时，由于本地缓存已经被清理，所有的数据需要重新从网络上获取。为了在清除缓存的时候能够正常清除与应用相关的缓存，请将缓存文件存放在getCacheDir()或者 getExternalCacheDir()路径下。<br>更多参考资料：</p>
+<p><a href="http://m.blog.csdn.net/blog/zmywly/44597941" target="_blank" rel="noopener">Android清除数据、清除缓存、一键清理的区别</a></p>
+<p><a href="http://droidyue.com/blog/2014/06/15/what-will-be-removed-if-you-click-clear-data-button-in-system-application-item/" target="_blank" rel="noopener">Android中系统设置中的清除数据究竟会清除哪些数据</a></p>
+<p><a href="http://blog.csdn.net/zhaokaiqiang1992/article/details/43451931" target="_blank" rel="noopener">APP的缓存文件到底应该存在哪？</a></p>
+<h5 id="SharedPreference在使用的过程总应该注意什么？"><a href="#SharedPreference在使用的过程总应该注意什么？" class="headerlink" title="SharedPreference在使用的过程总应该注意什么？"></a>SharedPreference在使用的过程总应该注意什么？</h5><p>1、commit()和apply()的区别</p>
+<p>首先就是他们的返回值不同。apply()没有返回值，而commit()返回boolean表明修改是否提交成功。 </p>
+<p>然后就是操作效率的区别。apply()是将修改数据原子提交到内存, 而后异步真正提交到硬件磁盘,。而commit()是同步的提交到硬件磁盘。因此，在多并发commit()的时候，会等待正在处理的commit保存到磁盘后再操作，从而降低了效率。而apply只是原子的提交到内容，后面有调用apply的函数的将会直接覆盖前面的内存数据，从一定程度上提高了效率。</p>
+<p> 如果对提交的结果不关心的话，建议使用apply()，如果需要确保提交成功且有后续操作的话，还是需要用commit()。</p>
+<p>2、在多进程下的表现</p>
+<p>一句话：在多进程中，如果要交换数据，不要使用SharedPreference，因为在不同版本表现不稳定，推荐使用ContentProvider替代。</p>
+<p>在有的文章中，有提到在多进程中使用SharedPreference添加下面标志位就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MODE_MULTI_PROCESS</span><br></pre></td></tr></table></figure>
+
+<p>但是在官方文档中这样提到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> This was the legacy (but undocumented) behavior in and</span><br><span class="line">   before Gingerbread (Android 2.3) and this flag is implied when targetting such releases.  </span><br><span class="line">   For applications targetting SDK versions greater than Android 2.3, </span><br><span class="line">   this flag must be explicitly set if desired.</span><br><span class="line"></span><br><span class="line">@deprecated MODE_MULTI_PROCESS does not work reliably in some versions of Android, </span><br><span class="line">and furthermore does not provide any mechanism for reconciling concurrent modifications </span><br><span class="line">across processes.  Applications should not attempt to use it.  Instead, they should use an explicit </span><br><span class="line">cross-process data management approach such as ContentProvider</span><br></pre></td></tr></table></figure>
+<p>简单解释下，就是这个标志位在2.3之前是默认支持的，但是在2.3之后，如果需要多进程访问的情景，就需要显示的声明出来。<br>现在这个标志位被废弃了，因为在某些版本上表现不稳定。我们开发者不应该尝试去使用它，因为他没有提供任何并发机制，我们应该使用一种明确支持跨进程访问的机制，比如ContentProvider。</p>
+<p>3、使用细节</p>
+<ul>
+<li>ContextImpl中有一个静态的ArrayMap变量sSharedPrefs，无论有多少个ContextImpl对象实例，系统都共享这一个sSharedPrefs的Map，应用启动以后首次使用SharePreference时创建，系统结束时才可能会被垃圾回收器回收，所以如果我们一个App中频繁的使用不同文件名的SharedPreferences很多时这个Map就会很大，也即会占用移动设备宝贵的内存空间。所以我们应用中应该尽可能少的使用不同文件名的SharedPreferences，取而代之的是合并他们，减小内存使用</li>
+<li>SharedPreferences在实例化时首先会从sdcard异步读文件，然后缓存在内存中；接下来的读操作都是内存缓存操作而不是文件操作。</li>
+<li>在SharedPreferences的Editor中如果用commit()方法提交数据，其过程是先把数据更新到内存，然后在当前线程中写文件操作，提交完成返回提交状态；如果用的是apply()方法提交数据，首先也是写到内存，接着在一个新线程中异步写文件，然后没有返回值。</li>
+<li>在写操作commit时有三级锁操作，效率很低，所以当我们一次有多个修改写操作时等都批量put完了再一次提交确认，这样可以提高效率。</li>
+</ul>
+<p>更多参考资料<br><a href="http://m.blog.csdn.net/blog/S04103037/40372659" target="_blank" rel="noopener">SharedPreference.Editor的apply和commit方法区别</a><br><a href="http://blog.csdn.net/yanbober/article/details/47866369" target="_blank" rel="noopener">Android应用Preference相关及源码浅析(SharePreferences篇)</a></p>
+<h5 id="SQLite有哪些地方可以优化"><a href="#SQLite有哪些地方可以优化" class="headerlink" title="SQLite有哪些地方可以优化"></a>SQLite有哪些地方可以优化</h5><p>参考资料<br><a href="http://www.runoob.com/sqlite/sqlite-index.html" target="_blank" rel="noopener">SQLite 索引</a><br><a href="http://www.trinea.cn/android/database-performance/" target="_blank" rel="noopener">性能优化之数据库优化</a></p>
+<h2 id="技术点：自定义View"><a href="#技术点：自定义View" class="headerlink" title="技术点：自定义View"></a>技术点：自定义View</h2><h5 id="Android-UI中的View如何刷新。"><a href="#Android-UI中的View如何刷新。" class="headerlink" title="Android UI中的View如何刷新。"></a>Android UI中的View如何刷新。</h5><p><code>view.invalidate();</code>主线程<br><code>view.postInvalidate();</code>子线程</p>
+<h5 id="自定义View的步骤"><a href="#自定义View的步骤" class="headerlink" title="自定义View的步骤"></a>自定义View的步骤</h5><ul>
+<li>明确需要，确定想要实现的效果。自定义控件主要包括以下方面：<ul>
+<li>(1)、自定义组合控件，继承viewgroup。例如自定义titlebar、settingitem、FlowLayout</li>
+<li>(2)、对原生控件进行拓展。例如RatioImageView</li>
+<li>(3)、完全的自定义控件。例如音频条形图。</li>
+</ul>
+</li>
+<li>自定义属性，编写attr.xml。然后在代码中通过TypedArray等类获取到自定义属性值。</li>
+<li>重写View#onMeasure、View#onLayout、View#onDraw方法。<ul>
+<li>如果View需要支持WrapContent属性需要重写OnMeasure方法。</li>
+<li>ViewGroup必须实现onLayout()方法，也可以继承系统实现好的ViewGroup</li>
+<li>重写OnDraw方法。如果是继承View那么就必须该方法啦。</li>
+</ul>
+</li>
+<li>如果需要解决事件冲突，就需要复写<code>dispatchTouchEvent</code>、<code>onTouchEvent</code>方法。<h5 id="Android触摸事件是如何传递的？"><a href="#Android触摸事件是如何传递的？" class="headerlink" title="Android触摸事件是如何传递的？"></a>Android触摸事件是如何传递的？</h5>在Android中的View触摸事件处理主要涉及以下三个方法<code>dispatchTouchEvent</code>() 、<code>onInterceptTouchEvent</code>()<code>onTouchEvent</code>()<br>View的触摸事件传递按照以下顺序Activity-&gt;PhoneWindow-&gt;DecorView-&gt;子View<br>他们之间的关系可以用伪代码标示，如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> consume = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (onInterceptTouchEvent(ev)) &#123;</span><br><span class="line">        consume = onTouchEvent(ev);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        consume = child.dispatchTouchEvent(ev);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> consume;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+另外，ViewGroup.onInterceptTouchEvent()默认返回false，即对触摸事件不进行拦截，都会分发到子View。</li>
+</ul>
+<p>如果View设置了onTouchListener()，则onTouchListener()的处理在onTouchEvent()之前，如果onTouchListener()返回true，则View.onTouchEvent()不会被调用，即onTouchListener()的优先权高于onTouchEvent()</p>
+<p>Android中默认认为View是消耗onTouchEvent()的，即返回值为true，除非它是不可点击的，即clickable和longClickable都为false。</p>
+<p>详细参考Android开发艺术探索第三章</p>
+<h2 id="技术点：掌握Android动画机制"><a href="#技术点：掌握Android动画机制" class="headerlink" title="技术点：掌握Android动画机制"></a>技术点：掌握Android动画机制</h2><h5 id="有什么快捷的方式实现Activity的变暗效果？"><a href="#有什么快捷的方式实现Activity的变暗效果？" class="headerlink" title="有什么快捷的方式实现Activity的变暗效果？"></a>有什么快捷的方式实现Activity的变暗效果？</h5><ul>
+<li>不开启新的Activity的方式</li>
+<li>不使用Dialog</li>
+<li>让背景跟Dialog出现一样，变暗，带动画。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dimBackground</span><span class="params">(<span class="keyword">final</span> <span class="keyword">float</span> from, <span class="keyword">final</span> <span class="keyword">float</span> to)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Window window = getWindow();</span><br><span class="line">    ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);</span><br><span class="line">    valueAnimator.setDuration(<span class="number">500</span>);</span><br><span class="line">    valueAnimator.addUpdateListener(<span class="keyword">new</span> AnimatorUpdateListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span> </span>&#123;</span><br><span class="line">            WindowManager.LayoutParams params = window.getAttributes();</span><br><span class="line">            params.alpha = (Float) animation.getAnimatedValue();</span><br><span class="line">            window.setAttributes(params);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    valueAnimator.start();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/** 窗口背景变暗*/</span></span><br><span class="line">dimBackground(<span class="number">1.0f</span>,<span class="number">0.5f</span>);</span><br><span class="line"><span class="comment">/** 窗口背景变亮*/</span></span><br><span class="line">dimBackground(<span class="number">0.5f</span>,<span class="number">1.0f</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="技术点：多线程并发、线程池"><a href="#技术点：多线程并发、线程池" class="headerlink" title="技术点：多线程并发、线程池"></a>技术点：多线程并发、线程池</h2><h5 id="请介绍下AsyncTask的内部实现，适用的场景是？"><a href="#请介绍下AsyncTask的内部实现，适用的场景是？" class="headerlink" title="请介绍下AsyncTask的内部实现，适用的场景是？"></a>请介绍下AsyncTask的内部实现，适用的场景是？</h5><p>AsyncTask内部也是Handler机制来完成的，只不过Android提供了执行框架来提供线程池来执行相应地任务，因为线程池的大小问题，所以AsyncTask只应该用来执行耗时时间较短的任务，比如HTTP请求，大规模的下载和数据库的更改不适用于AsyncTask，因为会导致线程池堵塞，没有线程来执行其他的任务，导致的情形是会发生AsyncTask根本执行不了的问题。</p>
+<h2 id="AIDL、进程间通讯"><a href="#AIDL、进程间通讯" class="headerlink" title="AIDL、进程间通讯"></a>AIDL、进程间通讯</h2><h5 id="AndroidIPC通讯方式和使用场景"><a href="#AndroidIPC通讯方式和使用场景" class="headerlink" title="AndroidIPC通讯方式和使用场景"></a>AndroidIPC通讯方式和使用场景</h5><p><img src="http://7xvkm8.com1.z0.glb.clouddn.com/AndroidIPC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.png" alt=""></p>
+<h5 id="Android如何使用多进程？"><a href="#Android如何使用多进程？" class="headerlink" title="Android如何使用多进程？"></a>Android如何使用多进程？</h5><p>我们的四大组件在AndroidManifest文件中注册的时候，只要声明<code>android:process</code>:接口让组件运行在单独的进程。如果是android:process=”:Remote”，以:开头的名字，则表示这是一个应用程序的私有进程，否则它是一个全局进程。私有进程的进程名称是会在冒号前自动加上包名，而全局进程则不会。</p>
+<p>好处：多进程显而易见的好处就是分担主进程的内存压力。我们的应用越做越大，内存越来越多，将一些独立的组件放到不同的进程，它就不占用主进程的内存空间了。当然还有其他好处，有心人会发现Android后台进程里有很多应用是多个进程的，因为它们要常驻后台，特别是即时通讯或者社交应用，不过现在多进程已经被用烂了。典型用法是在启动一个不可见的轻量级私有进程，在后台收发消息，或者做一些耗时的事情，或者开机启动这个进程，然后做监听等。还有就是防止主进程被杀守护进程，守护进程和主进程之间相互监视，有一方被杀就重新启动它。</p>
+<p>缺点：多占用了系统的空间，大家都这么用的话系统内存很容易占满而导致卡顿。消耗用户的电量。应用程序架构会变复杂，应为要处理多进程之间的通信。</p>
+<h2 id="技术点：Android系统"><a href="#技术点：Android系统" class="headerlink" title="技术点：Android系统"></a>技术点：Android系统</h2><h5 id="你看过Android-Framework的代码吗-介绍一下某一个或几个模块"><a href="#你看过Android-Framework的代码吗-介绍一下某一个或几个模块" class="headerlink" title="你看过Android Framework的代码吗?介绍一下某一个或几个模块?"></a>你看过Android Framework的代码吗?介绍一下某一个或几个模块?</h5><p>我觉得这个问题 最好从app相关系统模块讲一下,例如inputmanager(输入事件)，activitymanager,windowmanager等.或者从类似asyctask,hander,等基础工具来讲。</p>
+<h5 id="JVM、ART、Dalvik的区别"><a href="#JVM、ART、Dalvik的区别" class="headerlink" title="JVM、ART、Dalvik的区别"></a>JVM、ART、Dalvik的区别</h5><p>jvm：Java virtual machine。Java程序经过编译生成.class 字节码文件，这些class文件直接运行在JVM上。</p>
+<p>Dalvik：是Android 5.0之前使用的虚拟机。apk文件在打包的时候会生成一个.dex文件，每次android程序运行时，都会将该.dex文件即时翻译成机器码文件。执行效率不高。而Art的出现解决了这一问题。</p>
+<p>ART：在5.0之后Android全部替换掉了Dalvik，它在apk文件安装的时候会预先将.dex字节码文件翻译成机器码，这个机器码文件为.oat文件，它是能直接在硬件上运行的，这样使得android程序执行效率大大提升。但是缺点就是增加了内存空间的消耗，apk安装的时间也相应的增加。但是对于性能的提升，还是值得消耗这点内存的。</p>
+<p>拓展：ART、JIT、AOT、Dalvik之间有什么关系？</p>
+<ul>
+<li>JIT（Just In Time Compiler）的缩写，就是”即时编译技术”，与Dalvik虚拟机相关。代表运行时编译策略，也可以理解成一种运行时编译器，是为了加快Dalvik虚拟机解释dex速度提出的一种技术方案，来缓存频繁使用的本地机器码</li>
+<li>ART和Dalvik都算是一种Android运行时环境，或者叫做虚拟机，用来解释dex类型文件。但是ART是安装时解释，Dalvik是运行时解释</li>
+<li>AOT可以理解为一种编译策略，即运行前编译，ART虚拟机的主要特征就是AOT。</li>
+</ul>
+<p>更多参考资料<br><a href="http://baike.baidu.com/link?url=Ej9Ey4tvCvaYxNF1bJi119INLPjJqhuiYJjTEYaFkm9rDZEwfXPuGCYAlu5xXUobM8pm-LhEvFXHe7HPULCyeK" target="_blank" rel="noopener">Android runtime</a><br><a href="http://mobile.zol.com.cn/417/4173449_all.html#p4173449" target="_blank" rel="noopener">扭转战局的棋子 安卓4.4 ART模式实测解析</a></p>
+<h5 id="简单的linux命令"><a href="#简单的linux命令" class="headerlink" title="简单的linux命令"></a>简单的linux命令</h5><p>cat ls ps psw wc mv rm cd ping tracert find grep tail vi gcc make ifconfig<br>startup dhcp</p>
+<h5 id="dvm的进程和Linux的进程-应用程序的进程是否为同一个概念"><a href="#dvm的进程和Linux的进程-应用程序的进程是否为同一个概念" class="headerlink" title="dvm的进程和Linux的进程, 应用程序的进程是否为同一个概念"></a>dvm的进程和Linux的进程, 应用程序的进程是否为同一个概念</h5><p>Dvm的进程是dalivk虚拟机进程,每个android程序都运行在自己的进程里面,<br>每个android程序系统都会给他分配一个单独的liunx  uid(user id),<br>每个dvm都是linux里面的一个进程.所以说这两个进程是一个进程.</p>
+<h5 id="描述Android的四层体系架构"><a href="#描述Android的四层体系架构" class="headerlink" title="描述Android的四层体系架构"></a>描述Android的四层体系架构</h5><p>Android体系架构，可以分为四层，分别是，Linux  Kernel，Libraries，Applocation framework，Application。</p>
+<ul>
+<li>Linux Kernel是Linux内核层，包含了各种硬件驱动，是Android系统最底层最核心的部分。 它包含了Android系统的核心服务，硬件驱动，进程管理，系统安全等等。</li>
+<li>Libraries &amp; Runtime。c/c++库：包括webkit，freetype，SSL，SGL，SQLite。Runtime，指向字节码文件。</li>
+<li>Application framework：开发相关，包括了各种Manager，</li>
+<li>Application：面向用户，即应用程序。<h2 id="技术点：内存管理、性能优化"><a href="#技术点：内存管理、性能优化" class="headerlink" title="技术点：内存管理、性能优化"></a>技术点：内存管理、性能优化</h2></li>
+</ul>
+<h5 id="Androd中传递数据使用Bundle而不是HashMap"><a href="#Androd中传递数据使用Bundle而不是HashMap" class="headerlink" title="Androd中传递数据使用Bundle而不是HashMap"></a>Androd中传递数据使用Bundle而不是HashMap</h5><ul>
+<li>Bundle内部是由ArrayMap实现的，ArrayMap的内部实现是两个数组，一个int数组是存储对象数据对应下标，一个对象数组保存key和value，内部使用二分法对key进行排序，所以在添加、删除、查找数据的时候，都会使用二分法查找，只适合于小数据量操作，如果在数据量比较大的情况下，那么它的性能将退化。而HashMap内部则是数组+链表结构，所以在数据量较少的时候，HashMap的Entry Array比ArrayMap占用更多的内存。因为使用Bundle的场景大多数为小数据量，我没见过在两个Activity之间传递10个以上数据的场景，所以相比之下，在这种情况下使用ArrayMap保存数据，在操作速度和内存占用上都具有优势，因此使用Bundle来传递数据，可以保证更快的速度和更少的内存占用。</li>
+<li>另外一个原因，则是在Android中如果使用Intent来携带数据的话，需要数据是基本类型或者是可序列化类型，HashMap使用Serializable进行序列化，而Bundle则是使用Parcelable进行序列化。而在Android平台中，更推荐使用Parcelable实现序列化，虽然写法复杂，但是开销更小，所以为了更加快速的进行数据的序列化和反序列化，系统封装了Bundle类，方便我们进行数据的传输。</li>
+</ul>
+<p>以上内容来自于对<a href="https://github.com/android-cn/android-discuss/issues/142" target="_blank" rel="noopener">这个问题</a>的思考和总结</p>
+<ul>
+<li><a href="http://www.codes51.com/article/detail_163576.html" target="_blank" rel="noopener">Android内存优化（使用SparseArray和ArrayMap代替HashMap）</a></li>
+<li>Android开发艺术探索，第47页</li>
+</ul>
+<h5 id="StrongReference、WeakReference和SoftReference的区别？"><a href="#StrongReference、WeakReference和SoftReference的区别？" class="headerlink" title="StrongReference、WeakReference和SoftReference的区别？"></a>StrongReference、WeakReference和SoftReference的区别？</h5><ul>
+<li><p>强引用是普遍存在的，类是<code>Object obj = new Object();</code> 只要引用存在，Gc就不会回收该类应用</p>
+</li>
+<li><p>软引用用来描述一些有用但非必须的对象，对于软引用关联着的对象，在系统将要发生内存溢出异常时，将会把这些对象列入回收范围之中进行第二次回收。如果这次回收的还没有足够的内存，才会抛出内存溢出异常。在JDK1.2之后，提供了<code>SoftReference类来实现软引用</code>。</p>
+</li>
+<li><p>弱引用用来描述非必须的对象，但是它的强度比软引用更软一点，被弱引用关联的对象只能生存到下一次GC发生之前，当GC工作时，无论内存时候够用，都是回收弱应用关联的对象。在JDK1.2之后，提供了WeakReference类来实现弱引用。</p>
+</li>
+<li><p>虚引用。它是最弱的一个引用关系，一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用的唯一目的就是在这个对象被GC回收是收到一个系统通知。在JDK 1.2之后提供了PhantomReference类来实现虚引用。</p>
+<h5 id="Android-虚拟机什么时候进行GC"><a href="#Android-虚拟机什么时候进行GC" class="headerlink" title="Android 虚拟机什么时候进行GC"></a>Android 虚拟机什么时候进行GC</h5></li>
+<li><p>根搜索算法：Android虚拟机的垃圾回收采用的是<code>根搜索算法</code>。GC会从根节点（GC Roots）开始对heap进行遍历。到最后，部分没有直接或者间接引用到GC Roots的就是需要回收的垃圾，会被GC回收掉。</p>
+</li>
+</ul>
+<h5 id="在Android中，怎么节省内存的使用，怎么主动回收内存？"><a href="#在Android中，怎么节省内存的使用，怎么主动回收内存？" class="headerlink" title="在Android中，怎么节省内存的使用，怎么主动回收内存？"></a>在Android中，怎么节省内存的使用，怎么主动回收内存？</h5><ol>
+<li>回收已经使用的资源,  </li>
+<li>合理的使用缓存</li>
+<li>合理设置变量的作用范围…  application 对象 。<code>System.gc()</code>;//未来的某一段时间执行  <h5 id="内存泄露场景"><a href="#内存泄露场景" class="headerlink" title="内存泄露场景"></a>内存泄露场景</h5><a href="http://jiajixin.cn/2015/01/06/memory_leak/" target="_blank" rel="noopener">Android内存泄漏研究</a></li>
+</ol>
+<p>cursor对象为关闭、不复用convertView 、Bitmap不调用recycle()释放内存 (高版本自动释放)、动态注册广播在Activity销毁前没有unregisterReceiver。下面列举常见的内存泄漏实例：</p>
+<p>a)非静态的内部类，进行耗时操作，容易导致Acitivity在销毁时不能被gc回收。</p>
+<p>b)静态变量持有当前Activity的变量（相信一般不会这么干）</p>
+<p>c)单例模式引起的内存泄漏（单例声明生命周期和Application保持一致，如何单例中使用到Context，尽量使用Application的Context，否则容易内存泄漏），参考Android开发艺术探索。</p>
+<p>d)属性动画导致的内存泄漏，View持有Activity对象，如果动画长时间运行，在onDestory中<code>cancle</code>掉。</p>
+<p>Java 内存泄露的根本原因就是 ，保存了不可能再被访问的变量类型的引用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Vector v = <span class="keyword">new</span> Vector(<span class="number">10</span>);     </span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">100</span>; i++)&#123;    </span><br><span class="line">	Object o = <span class="keyword">new</span> Object();      　</span><br><span class="line">    v.add(o);      　</span><br><span class="line">	o = <span class="keyword">null</span>;      </span><br><span class="line">&#125;<span class="comment">//此时，所有的Object对象都没有被释放，因为变量v引用这些对象`</span></span><br></pre></td></tr></table></figure>
+<h5 id="性能优化问题，如何解决？"><a href="#性能优化问题，如何解决？" class="headerlink" title="性能优化问题，如何解决？"></a>性能优化问题，如何解决？</h5><p>性能优化主要包括一下方面：UI渲染、<strong>代码执行和内存使用</strong> 、电池</p>
+<h2 id="Android网络编程"><a href="#Android网络编程" class="headerlink" title="Android网络编程"></a>Android网络编程</h2><p>Http基础知识<a href="http://www.jianshu.com/p/e544b7a76dac" target="_blank" rel="noopener">我们需要掌握的Http</a></p>
+<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><h5 id="android中常见的设计模式有哪些？"><a href="#android中常见的设计模式有哪些？" class="headerlink" title="android中常见的设计模式有哪些？"></a>android中常见的设计模式有哪些？</h5><h5 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h5><p>建造者模式最明显的标志就是Build类，而在Android中最常用的就是Dialog的构建，Notification的构建也是标准的建造者模式。<br>建造者模式很好理解，如果一个类的构造需要很多参数，而且这些参数并不都是必须的，那么这种情况下就比较适合Builder。<br>比如构建一个AlertDialog，标题、内容、取消按钮、确定按钮、中立按钮，你可能只需要单独设置几个属性即可；另外在我的OkHttpPlus项目中，构造一个Http请求也是这样的，有可能你只需要设置URL，有可能需要添加请求参数、Http Header等，这个时候建造者模式也是比较合适的。</p>
+<p>#####单例模式<br>单例在Android开发中经常用到，但是表现形式可能不太一样。<br>以ActivityManager等系统服务来说，是通过静态代码块的形式实现单例，在首次加载类文件时，生成单例对象，然后保存在Cache中，之后的使用都是直接从Cache中获取。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class ContextImpl extends Context &#123;</span><br><span class="line"></span><br><span class="line">	static &#123;</span><br><span class="line">		registerService(ACTIVITY_SERVICE, new ServiceFetcher() &#123;</span><br><span class="line">                public Object createService(ContextImpl ctx) &#123;</span><br><span class="line">                    return new ActivityManager(ctx.getOuterContext(), 		ctx.mMainThread.getHandler());</span><br><span class="line">                &#125;&#125;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，还有更加明显的例子，比如AccessibilityManager内部自己也保证了单例，使用getInstance获取单例对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public static AccessibilityManager getInstance(Context context) &#123;</span><br><span class="line">       synchronized (sInstanceSync) &#123;</span><br><span class="line">           if (sInstance &#x3D;&#x3D; null) &#123;</span><br><span class="line">              </span><br><span class="line">              ......</span><br><span class="line">              </span><br><span class="line">               IBinder iBinder &#x3D; ServiceManager.getService(Context.ACCESSIBILITY_SERVICE);</span><br><span class="line">               IAccessibilityManager service &#x3D; iBinder &#x3D;&#x3D; null</span><br><span class="line">                       ? null : IAccessibilityManager.Stub.asInterface(iBinder);</span><br><span class="line">               sInstance &#x3D; new AccessibilityManager(context, service, userId);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return sInstance;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>除此之外，还有一些伪单例，比如Application，默认情况下在一个进程中只存在一个实例，但是Application不能算是单例，因为它的构造方法未私有，你可以生成多个Application实例，但是没有用，你没有通过attach()绑定相关信息，没有上下文环境。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public Application() &#123;</span><br><span class="line">     super(null);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>单例的使用场景也很简单，就是一个App只需要存在一个类实例的情况，或者是类的初始化操作比较耗费资源的情况。在很多开源框架中，我们只需要一个对象即可完成工作，比如各种网络框架和图片加载库。<br>除此之外，因为单例的实现方式很多，比如懒汉式、饿汉式、静态内部类、双重锁检查、枚举等方式，所以要清楚每种实现方式的主要特点和使用场景。</p>
+<p>#####原型模式</p>
+<p>原型模式在开发中使用的并不多，但是在源码中却有所体现。<br>书中以Intent介绍了原型模式，是通过实现Cloneable接口来做的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class Intent implements Parcelable, Cloneable &#123;</span><br><span class="line"> 	@Override</span><br><span class="line">    public Object clone() &#123;</span><br><span class="line">    	return new Intent(this);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实这样来看的话，原型模式也比较好理解，就是你想更快的获取到一个相同属性的对象，那么就可以使用原型模式，比如这里就获取到了一个Intent对象，Intent里面的属性与被clone的相同，但是两者并无关联，可以单独使用。<br>除了实现Cloneable接口，你完全可以自己定义一个方法，来获取一个对象。我这里以PhoneLayoutInflater为例子介绍。<br>PhoneLayoutInflater是LayoutInflater的子类，如果我们在Activity中获取LayoutInflate的话，是通过下面方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Override public Object getSystemService(String name) &#123;</span><br><span class="line">       if (LAYOUT_INFLATER_SERVICE.equals(name)) &#123;</span><br><span class="line">           if (mInflater &#x3D;&#x3D; null) &#123;</span><br><span class="line">               mInflater &#x3D; LayoutInflater.from(getBaseContext()).cloneInContext(this);</span><br><span class="line">           &#125;</span><br><span class="line">           return mInflater;</span><br><span class="line">       &#125;</span><br><span class="line">       return getBaseContext().getSystemService(name);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，如果为null，就会调用cloneInContext()，这个方法在LayoutInflate是抽象方法，具体实现在PhoneLayoutInflater中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public LayoutInflater cloneInContext(Context newContext) &#123;</span><br><span class="line">      return new PhoneLayoutInflater(this, newContext);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这也是一个原型模式，所以我们不要太纠结于形式，更重要的是理解这样做的好处。<br>除了在源码中可以看到原型模式，在开源框架中也可以看到，比如OkHttpClient中就存在着下面的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;** Returns a shallow copy of this OkHttpClient. *&#x2F;</span><br><span class="line">  @Override public OkHttpClient clone() &#123;</span><br><span class="line">    return new OkHttpClient(this);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，实现和前面的完全相同，也是new了一个对象返回，因为OkHttpClient的构造过程比较复杂，参数众多，所以用这种方式来直接生成新对象，成本很低，而且能保留之前对象的参数设置。</p>
+<h5 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h5><p>书中对于工厂方法模式的一个观点很新奇，就是Activity.onCreate()可以看做是工厂方法模式，来生成不同的View对象填充界面。<br>但是我对这个说法不太苟同，原因有两点：一是这种形式不太符合工厂方法，没有抽象，没有实现，不符合一般格式，也不是静态方法，不可看做是静态工厂方法；二是没有以生成对象为结果，即不是return view来生成对象，只是通过setContentView()来设置了属性而已。这就像是给一个Activity设置了背景颜色一样。当然，设计模式这东西一个人有一个人的看法。<br>静态工厂方法在Android中比较明显的例子应该就是BitmapFactory了，通过各种decodeXXX()就可以从不同渠道获得Bitmap对象，这里不再赘述。</p>
+<h5 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h5><p>在书中策略模式讲得非常好，结合动画的插值器用法，我们可以很好的理解策略模式的形式和用法。<br>在我看来，策略模式就相当于一个影碟机，你往里面插什么碟子，就能放出什么电影。<br>同样，在OkHttpPlus的封装中，为了对网络返回值进行解析，我使用了策略模式。当然我写代码的时候还不知道策略模式，是写完了之后突然想到，这就是策略模式啊！<br>策略模式的精髓就在于，你传入一个类，后面的处理就能按照这个类的实现去做。以动画为例，设置不同的插值器对象，就可以得到不同的变化曲线；以返回值解析为例，传入什么样的解析器，就可以把二进制数据转换成什么格式的数据，比如String、Json、XML。</p>
+<h5 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h5><p>书中对于责任链模式选取的例子非常有代表性，那就是Android的触摸机制，这个看法让我从另一个维度去理解Android中的触摸事件传递。<br>我在这里提到这个模式，并不想说太多，只是简单的推荐你读一下这一章的内容，相信你也会有收获的。</p>
+<h5 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h5><p>Android中的观察者模式应该是用的非常频繁的一种模式了，对于这个模式的使用场景就一句话：你想在某个对象发生变化时，立刻收到通知。<br>书中介绍观察者模式使用的是ListView的Adapter为例子，我之前知道Adapter属于适配器模式，不知道这里还有观察者模式的身影，学到了。<br>Android里面的各种监听器，也都属于观察者模式，比如触摸、点击、按键等，ContentProvider和广播接收者也有观察者模式的身影，可以说是无处不在。<br>除此之外，现在很多基于观察者模式的第三方框架也是非常多，比如EventBus、RxJava等等，都是对观察者模式的深入使用，感兴趣的同学可以研究一下。</p>
+<h5 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h5><p>这个模式我之前见的比较少，但是理解之后，就会发现这个模式很简单。<br>我觉得，模板方法模式的使用场景也是一句话：流程确定，具体实现细节由子类完成。<br>这里要关注一下『流程』这个关键字，随便拿一个抽象类，都符合”具体实现细节由子类完成”的要求，关键就在于是否有流程，有了流程，就叫模板方法模式，没有流程，就是抽象类的实现。<br>书中讲这个模式用的是AsyncTask，各个方法之间的执行符合流程，具体实现由我们完成，非常经典。<br>另外一个方面，Activity的生命周期方法可以看做是模板方法模式，各个生命周期方法都是有顺序的，具体实现我们可以重写，是不是和前面的要求很符合？关于这方面的理解，可以参考我的这篇文章：<a href="https://github.com/ZhaoKaiQiang/AndroidDifficultAnalysis/blob/master/03.%E8%B0%88%E8%B0%88%E4%BD%A0%E5%AF%B9Activity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%9A%84%E7%90%86%E8%A7%A3.md" target="_blank" rel="noopener">对Activity生命周期的理解</a>。</p>
+<p>除了Android里面的模板方法模式，在其他开源项目中也存在着这个模式的运用。比如鸿洋的OkHttp-Utils项目，就是模板方法模式的典型实现。将一个Http请求的过程分割成几部分，比如获取URL，获取请求头，拼接请求信息等步骤，这几个步骤之前有先后顺序，就可以这样来做。</p>
+<h5 id="代理模式和装饰器模式"><a href="#代理模式和装饰器模式" class="headerlink" title="代理模式和装饰器模式"></a>代理模式和装饰器模式</h5><p>之所以把这两个放在一起说，是因为这两种模式很像，所以这里简单介绍下他们之间的区别，主要有两点。</p>
+<ol>
+<li>装饰器模式关注于在一个对象上动态的添加方法，而代理模式关注于控制对对象的访问</li>
+<li>代理模式，代理类可以对它的客户隐藏一个对象的具体信息。因此，当使用代理模式的时候，我们常常在一个代理类中创建一个对象的实例。而当我们使用装饰器模式的时候，通常的做法是将原始对象作为一个参数传给装饰者的构造器<br>这两句话可能不太好理解，没关系，下面看个例子。<br>代理模式会持有被代理对象的实例，而这个实例一般是作为成员变量直接存在于代理类中的，即不需要额外的赋值。<br>比如说WindowManagerImpl就是一个代理类，虽然名字上看着不像，但是它代理的是WindowManagerGlobal对象。从下面的代码中就可以看出来。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public final class WindowManagerImpl implements WindowManager &#123;</span><br><span class="line">    private final WindowManagerGlobal mGlobal &#x3D; WindowManagerGlobal.getInstance();</span><br><span class="line">    private final Display mDisplay;</span><br><span class="line">    private final Window mParentWindow;</span><br><span class="line">    </span><br><span class="line">    ......</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void addView(View view, ViewGroup.LayoutParams params) &#123;</span><br><span class="line">        mGlobal.addView(view, params, mDisplay, mParentWindow);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void updateViewLayout(View view, ViewGroup.LayoutParams params) &#123;</span><br><span class="line">        mGlobal.updateViewLayout(view, params);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void removeView(View view) &#123;</span><br><span class="line">        mGlobal.removeView(view, false);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void removeViewImmediate(View view) &#123;</span><br><span class="line">        mGlobal.removeView(view, true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Display getDefaultDisplay() &#123;</span><br><span class="line">        return mDisplay;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面的代码中可以看出，大部分WindowManagerImpl的方法都是通过WindowManagerGlobal实现的，而WindowManagerGlobal对象不需要额外的赋值，就存在于WindowManagerImpl中。另外，WindowManagerGlobal中其实有大量的方法，但是通过WindowManagerImpl代理之后，都没有暴露出来，对开发者是透明的。<br>我们再来看一下装饰器模式。装饰器模式的目的不在于控制访问，而是扩展功能，相比于继承基类来扩展功能，使用装饰器模式更加的灵活。<br>书中是以Context和它的包装类ContextWrapper讲解的，也非常的典型，我这里就不在赘述了，贴出一些代码来说明装饰器模式的形式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class ContextWrapper extends Context &#123;</span><br><span class="line">    Context mBase;</span><br><span class="line"></span><br><span class="line">    public ContextWrapper(Context base) &#123;</span><br><span class="line">        mBase &#x3D; base;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是还有一个问题，就是在ContextWrapper中，所有方法的实现都是通过mBase来实现的，形式上是对上号了，说好的扩展功能呢？<br>功能扩展其实是在ContextWrapper的子类ContextThemeWrapper里面。<br>在ContextWrapper里面，获取系统服务是直接通过mBase完成的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public Object getSystemService(String name) &#123;</span><br><span class="line">        return mBase.getSystemService(name);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是在ContextThemeWrapper里面，对这个方法进行了重写，完成了功能扩展</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Override public Object getSystemService(String name) &#123;</span><br><span class="line">        if (LAYOUT_INFLATER_SERVICE.equals(name)) &#123;</span><br><span class="line">            if (mInflater &#x3D;&#x3D; null) &#123;</span><br><span class="line">                mInflater &#x3D; LayoutInflater.from(getBaseContext()).cloneInContext(this);</span><br><span class="line">            &#125;</span><br><span class="line">            return mInflater;</span><br><span class="line">        &#125;</span><br><span class="line">        return getBaseContext().getSystemService(name);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，如果不存在功能扩展就不算是装饰器模式了吗？其实设计模式本来就是『仁者见仁，智者见智』的事情，只要你能理解这个意思就好。</p>
+<h5 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h5><p>外观模式可能看到的比较少，但是其实不经意间你就用到了。<br>这里以我的一个开源项目KLog来说吧，在最开始写这个类的时候，就只有KLog这一个类，完成基本的Log打印功能，后来又添加了JSON解析、XML解析、Log信息存储等功能，这个时候一个类就不太合适了，于是我把JSON、XML、FILE操作相关的代码抽取到单独的类中，比如JSON打印的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public class JsonLog &#123;</span><br><span class="line"></span><br><span class="line">    public static void printJson(String tag, String msg, String headString) &#123;</span><br><span class="line"></span><br><span class="line">        String message;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            if (msg.startsWith(&quot;&#123;&quot;)) &#123;</span><br><span class="line">                JSONObject jsonObject &#x3D; new JSONObject(msg);</span><br><span class="line">                message &#x3D; jsonObject.toString(KLog.JSON_INDENT);</span><br><span class="line">            &#125; else if (msg.startsWith(&quot;[&quot;)) &#123;</span><br><span class="line">                JSONArray jsonArray &#x3D; new JSONArray(msg);</span><br><span class="line">                message &#x3D; jsonArray.toString(KLog.JSON_INDENT);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                message &#x3D; msg;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (JSONException e) &#123;</span><br><span class="line">            message &#x3D; msg;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Util.printLine(tag, true);</span><br><span class="line">        message &#x3D; headString + KLog.LINE_SEPARATOR + message;</span><br><span class="line">        String[] lines &#x3D; message.split(KLog.LINE_SEPARATOR);</span><br><span class="line">        for (String line : lines) &#123;</span><br><span class="line">            Log.d(tag, &quot;║ &quot; + line);</span><br><span class="line">        &#125;</span><br><span class="line">        Util.printLine(tag, false);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码很简单，就一个方法，但是在使用的时候，无论打印哪种格式，都是这样使用的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;普通打印</span><br><span class="line"> KLog.d(LOG_MSG);</span><br><span class="line"> &#x2F;&#x2F;JSON格式打印</span><br><span class="line"> KLog.json(JSON);</span><br><span class="line"> &#x2F;&#x2F;XML格式打印</span><br><span class="line"> KLog.xml(XML);</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，虽然功能不同，但是都通过KLog这个类进行了封装，用户只知道用KLog这个类能完成所有需求即可，完全不需要知道代码实现是几个类完成的。<br>实际上，在KLog内部，是多个类共同完成打印功能的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">private static void printLog(int type, String tagStr, Object... objects) &#123;</span><br><span class="line"></span><br><span class="line">       if (!IS_SHOW_LOG) &#123;</span><br><span class="line">           return;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       String[] contents &#x3D; wrapperContent(tagStr, objects);</span><br><span class="line">       String tag &#x3D; contents[0];</span><br><span class="line">       String msg &#x3D; contents[1];</span><br><span class="line">       String headString &#x3D; contents[2];</span><br><span class="line"></span><br><span class="line">       switch (type) &#123;</span><br><span class="line">           case V:</span><br><span class="line">           case D:</span><br><span class="line">           case I:</span><br><span class="line">           case W:</span><br><span class="line">           case E:</span><br><span class="line">           case A:</span><br><span class="line">               BaseLog.printDefault(type, tag, headString + msg);</span><br><span class="line">               break;</span><br><span class="line">           case JSON:</span><br><span class="line">               JsonLog.printJson(tag, msg, headString);</span><br><span class="line">               break;</span><br><span class="line">           case XML:</span><br><span class="line">               XmlLog.printXml(tag, msg, headString);</span><br><span class="line">               break;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是通过外观模式，这些细节对用户隐藏了，这样如果以后我想更换JSON的解析方式，用户的代码不需要任何改动，这也是这个设计模式的优势所在。</p>
+<p>总结<br>唠唠叨叨的，总算是把这几种设计模式介绍完了，看完这篇文章，你应该就会发现其实Android中的设计模式确实到处都存在，不是缺少设计模式，而是缺少一双发现的眼睛。<br>当然，设计模式的提出是为了解决特定的问题，当我们遇到类似问题的时候，可以从设计模式的角度思考和解决问题，这应该是我最大的收获吧。</p>
+<h2 id="热门Github开源框架"><a href="#热门Github开源框架" class="headerlink" title="热门Github开源框架"></a>热门Github开源框架</h2><h2 id="为归类问题"><a href="#为归类问题" class="headerlink" title="为归类问题"></a>为归类问题</h2><p>本地存储的数据该怎么加密比较好。比如：shared_prefs、sqlite数据、登录用户名、密码等。如果是Aes加密的话，怎么保存key值呢 </p>
+<p>密码不要存在本地，一般保存token。最基本的要代码混淆，可以的话加壳，防止反编译。</p>
+<h5 id="对称加密和非对称加密"><a href="#对称加密和非对称加密" class="headerlink" title="对称加密和非对称加密"></a>对称加密和非对称加密</h5><p>对称加密，就是加密和解密数据都是使用同一个key，这方面的算法有DES。<br>非对称加密，加密和解密是使用不同的key。发送数据之前要先和服务端约定生成公钥和私钥，使用公钥加密的数据可以用私钥解密，反之。这方面的算法有RSA。ssh 和 ssl都是典型的非对称加密。</p>
+<h5 id="Android自定义权限的作用"><a href="#Android自定义权限的作用" class="headerlink" title="Android自定义权限的作用"></a>Android自定义权限的作用</h5><ul>
+<li>什么时候使用自定义权限?</li>
+<li>和android:exported有什么区别?</li>
+<li>为什么很多第三方服务集成，都需要你自己定义权限？比如小米推送，为什么你要加上permission和use-permission两项？</li>
+</ul>
+<p>1.自定义权限主要是用来限制对本应用程序或者其他应用程序的特殊组件或功能的访问，如果startActivity()或者startActivityForResult()的调用者没有授予相应权限，那么启动会失败。自定义权限的节点详细信息可以参考官方API Guide Permission，完成权限自定义后可以在和、、、分别设置（PS：每个组件的权限设置还有些不一样），表示客户端与应用程序交互的权限许可，如果没有设置权限，那么默认权限为中的权限，如果两个都没有设置那么该Activity不会被权限保护。总结一下，自定义权限主要还是保护某些组件和功能的可访问性。</p>
+<p>2.首先说一下android:exported = [true | false]的功能主要是该组件是否可以被其他应用程序启动或者交互，既然是组件的属性那么就可以分别应用到、、、,更详细说明可以参考API Guide App Manifeset，当然官方最后说了要完成保护组件也可以使用自定义权限。</p>
+<p>3.不加权限就无法访问或者调用对应组件。</p>
+<h5 id="在Android的MVP架构中，使用了什么设计模式"><a href="#在Android的MVP架构中，使用了什么设计模式" class="headerlink" title="在Android的MVP架构中，使用了什么设计模式"></a>在Android的MVP架构中，使用了什么设计模式</h5><p>Observer模式：通过EventBus实现订阅者，发布者的功能，实现 Model与 Presenter 的交互。<br>Proxy模式：View保持对Presenter的引用，通过Presenter代理，进行交互操作。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/11/09/RxJava%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%B0%8F%E7%BB%93/" rel="prev" title="RxJava使用场景小结">
+      <i class="fa fa-chevron-left"></i> RxJava使用场景小结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/01/13/%E4%BD%A0%E5%BA%94%E8%AF%A5%E4%BA%86%E8%A7%A3%E7%9A%84CrashHandler%E7%94%A8%E6%B3%95/" rel="next" title="你应该了解的CrashHandler用法">
+      你应该了解的CrashHandler用法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：Android四大组件"><span class="nav-number">1.</span> <span class="nav-text">技术点：Android四大组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity"><span class="nav-number">1.1.</span> <span class="nav-text">Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#谈谈你对Activity生命周期的理解"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">谈谈你对Activity生命周期的理解?</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Activity的跳转要执行那些声明周期方法？"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">Activity的跳转要执行那些声明周期方法？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#两个Activity之间怎么传递数据？"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">两个Activity之间怎么传递数据？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#横竖屏切换时候Activity的生命周期"><span class="nav-number">1.1.0.4.</span> <span class="nav-text">横竖屏切换时候Activity的生命周期?</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如何退出Activity？如何安全退出已调用多个Activity的Application？"><span class="nav-number">1.1.0.5.</span> <span class="nav-text">如何退出Activity？如何安全退出已调用多个Activity的Application？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service"><span class="nav-number">1.2.</span> <span class="nav-text">service</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Android启动Service的两种方式是什么-它们的适用情况是什么"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">Android启动Service的两种方式是什么? 它们的适用情况是什么</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#什么是IntentService？有何优点？"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">什么是IntentService？有何优点？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contentProvider"><span class="nav-number">1.3.</span> <span class="nav-text">contentProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ContentProvider是如何实现数据共享的。"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">ContentProvider是如何实现数据共享的。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BroadCastReceiver"><span class="nav-number">1.4.</span> <span class="nav-text">BroadCastReceiver</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#BroadCastReceiver的安全性，如何解决"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">BroadCastReceiver的安全性，如何解决 ?</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#广播注册的两种方式"><span class="nav-number">1.4.0.2.</span> <span class="nav-text">广播注册的两种方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context的理解、Application的理解"><span class="nav-number">1.5.</span> <span class="nav-text">Context的理解、Application的理解</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#谈谈对Application的理解"><span class="nav-number">1.5.0.1.</span> <span class="nav-text">谈谈对Application的理解</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：UI设计、屏幕适配、MD"><span class="nav-number">2.</span> <span class="nav-text">技术点：UI设计、屏幕适配、MD</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#关于Material-Design的介绍文章"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">关于Material Design的介绍文章</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#屏幕适配方案"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">屏幕适配方案</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：Androd数据存储和缓存策略"><span class="nav-number">3.</span> <span class="nav-text">技术点：Androd数据存储和缓存策略</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存文件可以放在哪里？它们各自的特点是什么？"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">缓存文件可以放在哪里？它们各自的特点是什么？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#清除数据、清除缓存的区别"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">清除数据、清除缓存的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SharedPreference在使用的过程总应该注意什么？"><span class="nav-number">3.0.0.3.</span> <span class="nav-text">SharedPreference在使用的过程总应该注意什么？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SQLite有哪些地方可以优化"><span class="nav-number">3.0.0.4.</span> <span class="nav-text">SQLite有哪些地方可以优化</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：自定义View"><span class="nav-number">4.</span> <span class="nav-text">技术点：自定义View</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Android-UI中的View如何刷新。"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">Android UI中的View如何刷新。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#自定义View的步骤"><span class="nav-number">4.0.0.2.</span> <span class="nav-text">自定义View的步骤</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Android触摸事件是如何传递的？"><span class="nav-number">4.0.0.3.</span> <span class="nav-text">Android触摸事件是如何传递的？</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：掌握Android动画机制"><span class="nav-number">5.</span> <span class="nav-text">技术点：掌握Android动画机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#有什么快捷的方式实现Activity的变暗效果？"><span class="nav-number">5.0.0.1.</span> <span class="nav-text">有什么快捷的方式实现Activity的变暗效果？</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：多线程并发、线程池"><span class="nav-number">6.</span> <span class="nav-text">技术点：多线程并发、线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#请介绍下AsyncTask的内部实现，适用的场景是？"><span class="nav-number">6.0.0.1.</span> <span class="nav-text">请介绍下AsyncTask的内部实现，适用的场景是？</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIDL、进程间通讯"><span class="nav-number">7.</span> <span class="nav-text">AIDL、进程间通讯</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AndroidIPC通讯方式和使用场景"><span class="nav-number">7.0.0.1.</span> <span class="nav-text">AndroidIPC通讯方式和使用场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Android如何使用多进程？"><span class="nav-number">7.0.0.2.</span> <span class="nav-text">Android如何使用多进程？</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：Android系统"><span class="nav-number">8.</span> <span class="nav-text">技术点：Android系统</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#你看过Android-Framework的代码吗-介绍一下某一个或几个模块"><span class="nav-number">8.0.0.1.</span> <span class="nav-text">你看过Android Framework的代码吗?介绍一下某一个或几个模块?</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JVM、ART、Dalvik的区别"><span class="nav-number">8.0.0.2.</span> <span class="nav-text">JVM、ART、Dalvik的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#简单的linux命令"><span class="nav-number">8.0.0.3.</span> <span class="nav-text">简单的linux命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#dvm的进程和Linux的进程-应用程序的进程是否为同一个概念"><span class="nav-number">8.0.0.4.</span> <span class="nav-text">dvm的进程和Linux的进程, 应用程序的进程是否为同一个概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#描述Android的四层体系架构"><span class="nav-number">8.0.0.5.</span> <span class="nav-text">描述Android的四层体系架构</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点：内存管理、性能优化"><span class="nav-number">9.</span> <span class="nav-text">技术点：内存管理、性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Androd中传递数据使用Bundle而不是HashMap"><span class="nav-number">9.0.0.1.</span> <span class="nav-text">Androd中传递数据使用Bundle而不是HashMap</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#StrongReference、WeakReference和SoftReference的区别？"><span class="nav-number">9.0.0.2.</span> <span class="nav-text">StrongReference、WeakReference和SoftReference的区别？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Android-虚拟机什么时候进行GC"><span class="nav-number">9.0.0.3.</span> <span class="nav-text">Android 虚拟机什么时候进行GC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#在Android中，怎么节省内存的使用，怎么主动回收内存？"><span class="nav-number">9.0.0.4.</span> <span class="nav-text">在Android中，怎么节省内存的使用，怎么主动回收内存？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内存泄露场景"><span class="nav-number">9.0.0.5.</span> <span class="nav-text">内存泄露场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#性能优化问题，如何解决？"><span class="nav-number">9.0.0.6.</span> <span class="nav-text">性能优化问题，如何解决？</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android网络编程"><span class="nav-number">10.</span> <span class="nav-text">Android网络编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设计模式"><span class="nav-number">11.</span> <span class="nav-text">设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#android中常见的设计模式有哪些？"><span class="nav-number">11.0.0.1.</span> <span class="nav-text">android中常见的设计模式有哪些？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#建造者模式"><span class="nav-number">11.0.0.2.</span> <span class="nav-text">建造者模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#工厂方法模式"><span class="nav-number">11.0.0.3.</span> <span class="nav-text">工厂方法模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#策略模式"><span class="nav-number">11.0.0.4.</span> <span class="nav-text">策略模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#责任链模式"><span class="nav-number">11.0.0.5.</span> <span class="nav-text">责任链模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#观察者模式"><span class="nav-number">11.0.0.6.</span> <span class="nav-text">观察者模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#模板方法模式"><span class="nav-number">11.0.0.7.</span> <span class="nav-text">模板方法模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代理模式和装饰器模式"><span class="nav-number">11.0.0.8.</span> <span class="nav-text">代理模式和装饰器模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#外观模式"><span class="nav-number">11.0.0.9.</span> <span class="nav-text">外观模式</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#热门Github开源框架"><span class="nav-number">12.</span> <span class="nav-text">热门Github开源框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为归类问题"><span class="nav-number">13.</span> <span class="nav-text">为归类问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#对称加密和非对称加密"><span class="nav-number">13.0.0.1.</span> <span class="nav-text">对称加密和非对称加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Android自定义权限的作用"><span class="nav-number">13.0.0.2.</span> <span class="nav-text">Android自定义权限的作用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#在Android的MVP架构中，使用了什么设计模式"><span class="nav-number">13.0.0.3.</span> <span class="nav-text">在Android的MVP架构中，使用了什么设计模式</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Koterwong"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Koterwong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/koterwong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;koterwong" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:koterwong@gmail.com" title="E-Mail → mailto:koterwong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Koterwong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

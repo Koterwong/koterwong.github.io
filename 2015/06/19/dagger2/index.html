@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://koterwong.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="Dagger2简单实用指南">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dagger2简单实用指南">
+<meta property="og:url" content="http://koterwong.top/2015/06/19/dagger2/index.html">
+<meta property="og:site_name" content="Koterwong的随笔">
+<meta property="og:description" content="Dagger2简单实用指南">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-06-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-01-03T12:52:26.064Z">
+<meta property="article:author" content="Koterwong">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://koterwong.top/2015/06/19/dagger2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Dagger2简单实用指南 | Koterwong的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Koterwong的随笔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://koterwong.top/2015/06/19/dagger2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Koterwong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Koterwong的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dagger2简单实用指南
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-06-19 00:00:00" itemprop="dateCreated datePublished" datetime="2015-06-19T00:00:00+08:00">2015-06-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="1、简单介绍"><a href="#1、简单介绍" class="headerlink" title="1、简单介绍"></a>1、简单介绍</h4><p>Dagger2是一款快速的依赖注入框架。</p>
+<h4 id="2、相关概念"><a href="#2、相关概念" class="headerlink" title="2、相关概念"></a>2、相关概念</h4><p>依赖注入：目标类中所依赖的类的初始化不是通过new 关键字创建出来，而是通过技术手段，将初始化好的类自动注入到目标类中。        </p>
+<p>控制反转：用来削弱类之间的耦合关系，又称为依赖倒置原理，是面向对象的一种全新设计模式。可以理解为依赖注入的实现方式（个人理解）。</p>
+<p>关于dagger2一些抽象概念的讲解，嗯，讲解的很好：</p>
+<p><a href="http://www.jianshu.com/p/cd2c1c9f68d4" target="_blank" rel="noopener">Android：dagger2让你爱不释手-基础依赖注入框架篇</a></p>
+<p><a href="http://www.jianshu.com/p/1d42d2e6f4a5" target="_blank" rel="noopener">Android：dagger2让你爱不释手-重点 概念讲解、融合篇</a></p>
+<p><a href="http://www.jianshu.com/p/65737ac39c44" target="_blank" rel="noopener">Android：dagger2让你爱不释手-终结篇</a></p>
+<p>这里小结一下：</p>
+<ul>
+<li>Inject：标注目标类的属性成员和被注入类的构造函数。在目标类中标注属性成员变量表示我们要这个类的实例；在标注被注入类的构造函数的时候，表示我们可以通过component将该类的实例注入到相关的目标类中。</li>
+<li>Module：可以理解为简单工厂，用于生成被注入类的实例。上面通过Inject标注构造的方式不需要使用Module去提供实例，但是第三方库需要注入的时候就必须使用Module实现。在Module中我们使用@Provides注解对module中提供实例的方法进行标注，Component需要那个实例就会查找Module中使用@Provides标注的方法。</li>
+<li>Component： 注射器，连接器。连接目标类和要被注入类的实例，同时也具有管理该component的module功能，Component中的modules注解可以把Module加入Component，modules可以加入多个Module。一般我们的应用程序要有一个全局的Component用来管理整个App都用到的类实例（这些全局的类实例一般都是单例的）。其次，对于每一个页面也会对应一个Component，这当然不是必须，有些页面依赖的类实例是一样的也可以公用一个Component。</li>
+<li>Provides：Module中创建依赖类实例的方法使用该注解标注。</li>
+<li>Qualifier：用于解决依赖注入的迷失。</li>
+<li>Scope：是一个需要我们自定义注解作用域，理解起来很困难，而且很多文章也讲的不是清楚。大部分文章总结Scope的作用是：可以通过自定义的Scope注解，来限定通过Module和Inject方法创建的类的生命周期和目标类的生命周期保持一致。其实Scope根本没有这些功能，它的真正作用是<strong>管理Component之间的组织方式</strong>。不管是依赖方式还是包含方式，都有必要用自定义的Scope注解来标记这些Component，这些注解最好不要一样了，不一样能更好的体现出Component的组织方式。还有编辑器会检查有依赖关系或包含关系的Component，若发现有Component没有自定义的Scope注解，则会报错；<em>另外Scope还能更好的管理Component和Module的匹配关系</em>；提高代码的可读性；后面两点在Singleton中有体现。</li>
+<li>Singleton：Singleton并没有创建单例的能力，它是Scope的一种实现。要想实现单例，我们需要在Module中定义创建实例的方法（Inject的方式不行），使用全局的AppComponent管理Module，保证AppComponent只初始化一次。既然Singleton不能创建单例，那么它的作用是什么呢？保证AppComponent和Module是匹配的，如果AppComponent的Scope个Module的Scope不一样，那么编译时就会报错。提高代码的可读性，让程序员明白Module中创建的类是单例的。</li>
+</ul>
+<p>Component：Component是注入依赖实例的关键的关键，在目标类中使用Inject标注要注入的类的时候，在调用inject方法之后，Component会向自己管理的Module中查找用Provides标志的创建实例的方法，如果没有就会查找用Inject标记的相关构造函数。Module的优先级高于用Inject标注的构造函数。如果在Module找到相关实例，就会停止到Inject标注的构造函数中查找。</p>
+<p>依赖注入迷失：Component在寻找目标类所依赖的实例时（在Module的Provides或者Inject标注的构造函数），这里假设在Inject标注中寻找，如果多个构造函数是用Inject进行标注，就会造成依赖注入迷失。这个时候就需要使用Qualifier（限定符）告诉Component使用那个构造函数进行实例化，通常我们是用自定义的Qualifier注解标注目标类的属性和Inject的够着函数（@Named注解就是Dagger2的默认实现方式）。这种实例化的方式相当与给使用Inject标志的构造函数加上一个ID。（使用方法后面介绍）。</p>
+<p><strong>共享类实例，Component提供类的实例，如果Component想把其他Component注入到自己的目标类中，假设Activity的Component需要依赖到全局Component，那么这个时候就涉及共享类实例的问题了</strong></p>
+<p><strong>Component之间的组织关系</strong></p>
+<ul>
+<li>dependencies ：一个Component可以依赖一个或者多个Conmponent。</li>
+<li>SubComponent： 一个Component可以包含一个或多个Component，被包含的Componnet还可以继续包含其他的Component。SubComponent就是被包含的体现。</li>
+<li>继承：不是解决类共享实例的方式存在的，而是为了更好的管理、维护Component之间的关系，把Component一些共有的方法抽取到父类中，然后之类继承。</li>
+</ul>
+<p><strong>一次依赖注入具体步骤如下：</strong></p>
+<ul>
+<li>1、在Module中查找是否有创建该实例的方法。</li>
+<li>2、Module中如果存在创建实例的方法，那么查看该方法是否存在参数。<ul>
+<li>2.1、若存在参数，则按步骤1开始依次初始化每个参数。</li>
+<li>2.2、若不存在参数，则直接初始化该实例，整个依赖注入过程完成。</li>
+</ul>
+</li>
+<li>3、Module中不存在创建实例的方法，则查找Inject注解的构造函数。<ul>
+<li>构造函数存在参数，从步骤1开始初始化每个参数。</li>
+<li>构造函数不存在参数，直接初始化该类实例，整个依赖注入过程完成。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3、使用步骤"><a href="#3、使用步骤" class="headerlink" title="3、使用步骤"></a>3、使用步骤</h4><p>（1）配置grandle</p>
+<p>在工程目录下的build.grandle添加。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">  repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">  &#125;</span><br><span class="line">  dependencies &#123;</span><br><span class="line">    classpath <span class="string">'com.neenbedankt.gradle.plugins:android-apt:1.8'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在module的build.grandle中添加。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Apply plugin</span></span><br><span class="line">apply plugin: <span class="string">'com.neenbedankt.android-apt'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Add Dagger dependencies</span></span><br><span class="line">dependencies &#123;</span><br><span class="line">  compile <span class="string">'com.google.dagger:dagger:2.x'</span></span><br><span class="line">  apt <span class="string">'com.google.dagger:dagger-compiler:2.x'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、依赖注入"><a href="#4、依赖注入" class="headerlink" title="4、依赖注入"></a>4、依赖注入</h4><h5 id="4-1-Inject基本注入："><a href="#4-1-Inject基本注入：" class="headerlink" title="4.1@Inject基本注入："></a>4.1@Inject基本注入：</h5><p>使用@Inject完成最基本的注入方式。</p>
+<p>要注入的类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Book</span> </span>&#123;</span><br><span class="line">	<span class="comment">//使用@Inject注解标注要注入类的构造函数。</span></span><br><span class="line">    <span class="meta">@Inject</span> <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>目标类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">	<span class="comment">//在目标类中同样使用@Inject注入依赖的类。但是这时并不会赋值。</span></span><br><span class="line">  	<span class="meta">@Inject</span> Book book;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用Component（注射器、连接器）连接注入类和目标类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AppComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成以上步骤，需要我们手动make project生成相关类，然后进行注入。在目标类中代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Inject</span> Book book;</span><br><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    ... ... </span><br><span class="line">	<span class="comment">//注入依赖的类，这时候我们使用inject标签注入的类就初始化完成了。</span></span><br><span class="line">    DaggerAppComponent.builder().build().inject(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Component连接了我们的目标类和注入类。上述注入方式的工作原理为：</p>
+<ul>
+<li>在调用<code>inject(this)</code>方法的时候，component会查找目标类使用@Inject标注的属性。</li>
+<li>查找属性使用@Inject标注的构造函数，并创建实例。</li>
+<li>对属性进行赋值。</li>
+</ul>
+<h5 id="4-2使用-Module的方式注入："><a href="#4-2使用-Module的方式注入：" class="headerlink" title="4.2使用@Module的方式注入："></a>4.2使用@Module的方式注入：</h5><p>Module是一个静态工厂，用于生产目标类所依赖的实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppModule</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Context context;</span><br><span class="line">  	<span class="comment">//通过Module的构造函数传参。</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AppModule</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="comment">//Provides标记方法提供依赖类。@Singleton要</span></span><br><span class="line">    <span class="meta">@Singleton</span> <span class="meta">@Provides</span></span><br><span class="line">    <span class="function">Book <span class="title">provideBook</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Book(context);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Component</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Singleton</span></span><br><span class="line"><span class="meta">@Component</span>(modules = AppModule<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">interface</span> <span class="title">AppComponent</span> </span>&#123;</span><br><span class="line">  	<span class="comment">//直接返回要注入的实例，这样就可以在目标类中直接获取。也可以使用Void inject(Object obj)的方式。</span></span><br><span class="line">  	<span class="comment">//两种情况的适用场景不同。</span></span><br><span class="line">    <span class="function">Book <span class="title">getBook</span><span class="params">()</span></span>;</span><br><span class="line">  	<span class="comment">//void inject(MyApp app); 这种情况使用于在一个类中进行注入，</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>目标类中，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取Component对象。我们不使用</span></span><br><span class="line">AppComponent daggerAppComponent = DaggerAppComponent</span><br><span class="line">		.builder()</span><br><span class="line">		.appModule(<span class="keyword">new</span> AppModule(<span class="keyword">this</span>))</span><br><span class="line">		.build();</span><br><span class="line"><span class="comment">//同过Component获取实例。我们可以把component对象共享出去，这样在其他类中我们就可以获取book实例。</span></span><br><span class="line">Book book = daggerAppComponent.getBook();</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-3-使用Qualifier解决依赖注入迷失"><a href="#4-3-使用Qualifier解决依赖注入迷失" class="headerlink" title="4.3 使用Qualifier解决依赖注入迷失"></a>4.3 使用Qualifier解决依赖注入迷失</h5><p>Module：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppModule</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> Context context;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AppModule</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="comment">//这里有多个提供提供Book的方法，</span></span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@Named</span>(value = <span class="string">"one"</span>)</span><br><span class="line">    <span class="function">Book <span class="title">providerBookOne</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Book();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@Named</span>(value = <span class="string">"two"</span>)</span><br><span class="line">    <span class="function">Book <span class="title">providerBookTwo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Book(context);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@Component</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(modules = AppModule<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">interface</span> <span class="title">AppComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MyApp myApp)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@注入。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里注入的时候，通过自定义的Qualifier注解告诉Component应该实例化那个实例。</span></span><br><span class="line"><span class="meta">@Named</span>(value = <span class="string">"one"</span>)</span><br><span class="line"><span class="meta">@Inject</span> Book one;</span><br><span class="line"><span class="meta">@Named</span>(value = <span class="string">"two"</span>)</span><br><span class="line"><span class="meta">@Inject</span> Book two;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate();</span><br><span class="line">    DaggerAppComponent.builder()</span><br><span class="line">            .build()</span><br><span class="line">            .inject(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-4、-Scope-定义作用域"><a href="#4-4、-Scope-定义作用域" class="headerlink" title="4.4、@Scope 定义作用域"></a>4.4、@Scope 定义作用域</h5><p>这里将Scope理解为用来管理Component实例和App或者Activity的生命周期一致就好。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义Scope，这里功能个Singleton类似</span></span><br><span class="line"><span class="meta">@Scope</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PerApp &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Module</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppModule</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Context context;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AppModule</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="comment">//这里通过@PerApp标注，在Component中也必须有使用@PreApp与之对应。</span></span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@PerApp</span> <span class="function">Context <span class="title">providerContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> context;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Component</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里Component同样使用PerApp标志，不然编辑会检查错误。</span></span><br><span class="line"><span class="meta">@PerApp</span></span><br><span class="line"><span class="meta">@Component</span>(modules = AppModule<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">interface</span> <span class="title">AppComponent</span> </span>&#123;</span><br><span class="line">    <span class="function">Context <span class="title">getContext</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注入：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> AppComponent appComponent;</span><br><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate();</span><br><span class="line">    appComponent = DaggerAppComponent</span><br><span class="line">            .builder()</span><br><span class="line">            .appModule(<span class="keyword">new</span> AppModule(<span class="keyword">this</span>))</span><br><span class="line">            .build();</span><br><span class="line">    Context context = appComponent.getContext();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> AppComponent <span class="title">getAppComponent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> appComponent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意点：</p>
+<ul>
+<li>一个Module中只能存在一种Scope。</li>
+<li>Scope标注的Component和所依赖的Component的Scope不能一样。</li>
+</ul>
+<h5 id="4-5、依赖Component"><a href="#4-5、依赖Component" class="headerlink" title="4.5、依赖Component"></a>4.5、依赖Component</h5><p>有时候，我们的Component可能还依赖另外一个Component所管理的Module产生的实例。例如下面的例子，展示了Activity的component依赖到全局的AppComponent，然后注入全局的AppComponent提供的实例。</p>
+<p>@AppComponent:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PerApp</span></span><br><span class="line"><span class="meta">@Component</span>(modules = AppModule<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">interface</span> <span class="title">AppComponent</span> </span>&#123;</span><br><span class="line">    <span class="function">Context <span class="title">getContext</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">ToastUtils <span class="title">getToastUtils</span><span class="params">()</span></span>;  <span class="comment">//提供全局的Toastutils</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@AppModule：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppModule</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Context context;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AppModule</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@PerApp</span> <span class="function">Context <span class="title">providerContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> context;</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="comment">//生产ToastUtils实例。</span></span><br><span class="line">    <span class="meta">@Provides</span> <span class="function">ToastUtils <span class="title">providerToastUtils</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ToastUtils(context);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@MainComponent：</p>
+<p>可以看到，MainComponent依赖到了AppComponent。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PerActivity</span></span><br><span class="line"><span class="meta">@Component</span>(dependencies = AppComponent<span class="class">.<span class="keyword">class</span> ,<span class="title">modules</span> </span>= &#123;MainModule<span class="class">.<span class="keyword">class</span>,<span class="title">ActivityModule</span>.<span class="title">class</span>&#125;)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">interface</span> <span class="title">MainComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@MainModule：</p>
+<p>在MainModule这里提供了Book实例，我们要做的就是通过注入全局的Toast对象然后弹出Book的书名信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainModule</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@PerActivity</span> <span class="function">Book <span class="title">providesBook</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Book(<span class="string">"android开发艺术探索"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在MainActivity中注入ToastUtils实例和Book实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Inject</span> ToastUtils toastUtils;</span><br><span class="line"><span class="meta">@Inject</span> Book book;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">    MainComponent mainComponent = DaggerMainComponent.builder()</span><br><span class="line">            .appComponent(getAppComponent())  <span class="comment">//注意</span></span><br><span class="line">            .mainModule(<span class="keyword">new</span> MainModule())</span><br><span class="line">            .build();</span><br><span class="line">    mainComponent.inject(<span class="keyword">this</span>);</span><br><span class="line">  </span><br><span class="line">    Button button = <span class="keyword">new</span> Button(<span class="keyword">this</span>);</span><br><span class="line">    button.setLayoutParams(<span class="keyword">new</span> ViewGroup.LayoutParams(<span class="number">200</span>, <span class="number">200</span>));</span><br><span class="line">	<span class="comment">//这里我们通过点击button弹出book.name的信息。</span></span><br><span class="line">    button.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">            toastUtils.showToast(<span class="string">"BookName："</span> + book.name );</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    ((ViewGroup) findViewById(android.R.id.content)).addView(button);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/17/AndroidAycnTask%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="prev" title="AndroidAycnTask源码解析">
+      <i class="fa fa-chevron-left"></i> AndroidAycnTask源码解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/08/09/%E8%B7%B3%E8%BF%87Flash%E7%95%8C%E9%9D%A2%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/" rel="next" title="跳过Flash界面的正确姿势">
+      跳过Flash界面的正确姿势 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、简单介绍"><span class="nav-number">1.</span> <span class="nav-text">1、简单介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、相关概念"><span class="nav-number">2.</span> <span class="nav-text">2、相关概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、使用步骤"><span class="nav-number">3.</span> <span class="nav-text">3、使用步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、依赖注入"><span class="nav-number">4.</span> <span class="nav-text">4、依赖注入</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-1-Inject基本注入："><span class="nav-number">4.1.</span> <span class="nav-text">4.1@Inject基本注入：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2使用-Module的方式注入："><span class="nav-number">4.2.</span> <span class="nav-text">4.2使用@Module的方式注入：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-使用Qualifier解决依赖注入迷失"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 使用Qualifier解决依赖注入迷失</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4、-Scope-定义作用域"><span class="nav-number">4.4.</span> <span class="nav-text">4.4、@Scope 定义作用域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-5、依赖Component"><span class="nav-number">4.5.</span> <span class="nav-text">4.5、依赖Component</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Koterwong"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Koterwong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/koterwong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;koterwong" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:koterwong@gmail.com" title="E-Mail → mailto:koterwong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Koterwong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
