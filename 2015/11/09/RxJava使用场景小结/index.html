@@ -54,7 +54,7 @@
 <meta property="og:description" content="##RxJava使用场景 1、线程并发和线程调度 123456789101112131415161718Observable.just(true)        .map(new Func1&lt;Boolean, Boolean&gt;() &amp;#123;            @Override public Boolean call(Boolean aBoolean) &amp;#123;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2015-11-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-01-03T13:00:17.674Z">
+<meta property="article:modified_time" content="2020-01-04T00:52:59.761Z">
 <meta property="article:author" content="Koterwong">
 <meta property="article:tag" content="Android">
 <meta property="article:tag" content="RxJava">
@@ -224,6 +224,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2015/11/09/RxJava%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%B0%8F%E7%BB%93/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2015/11/09/RxJava%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%B0%8F%E7%BB%93/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -238,7 +252,7 @@
 <p>1、线程并发和线程调度</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Observable.just(<span class="keyword">true</span>)</span><br><span class="line">        .map(<span class="keyword">new</span> Func1&lt;Boolean, Boolean&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Boolean <span class="title">call</span><span class="params">(Boolean aBoolean)</span> </span>&#123;</span><br><span class="line">                <span class="comment">//do some long operation</span></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribeOn(Schedulers.io())</span><br><span class="line">        .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">        .subscribe(getSubscribe());</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Action1&lt;Boolean&gt; <span class="title">getSubscribe</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Action1&lt;Boolean&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Boolean aBoolean)</span> </span>&#123;</span><br><span class="line">				<span class="comment">//只关心onNext()事件</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
+
 
 <p>2、buffer变换操作符，将事件缓冲，然后再发射Observable序列。（例如Button点击次数）</p>
 <ul>
@@ -316,6 +330,7 @@
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -377,7 +392,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -480,6 +495,35 @@
   
 
   
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'owszTwWNkskIjjkFrAO3ErXj-gzGzoHsz',
+      appKey: 'Ssyw9IJHW5cWHfzllcl2NHQh',
+      placeholder: "Just go go",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
 
 </body>
 </html>
