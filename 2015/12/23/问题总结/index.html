@@ -451,7 +451,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dimBackground</span><span class="params">(<span class="keyword">final</span> <span class="keyword">float</span> from, <span class="keyword">final</span> <span class="keyword">float</span> to)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Window window = getWindow();</span><br><span class="line">    ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);</span><br><span class="line">    valueAnimator.setDuration(<span class="number">500</span>);</span><br><span class="line">    valueAnimator.addUpdateListener(<span class="keyword">new</span> AnimatorUpdateListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span> </span>&#123;</span><br><span class="line">            WindowManager.LayoutParams params = window.getAttributes();</span><br><span class="line">            params.alpha = (Float) animation.getAnimatedValue();</span><br><span class="line">            window.setAttributes(params);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    valueAnimator.start();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/** 窗口背景变暗*/</span></span><br><span class="line">dimBackground(<span class="number">1.0f</span>,<span class="number">0.5f</span>);</span><br><span class="line"><span class="comment">/** 窗口背景变亮*/</span></span><br><span class="line">dimBackground(<span class="number">0.5f</span>,<span class="number">1.0f</span>);</span><br></pre></td></tr></table></figure>
 
 <h2 id="技术点：多线程并发、线程池"><a href="#技术点：多线程并发、线程池" class="headerlink" title="技术点：多线程并发、线程池"></a>技术点：多线程并发、线程池</h2><h5 id="请介绍下AsyncTask的内部实现，适用的场景是？"><a href="#请介绍下AsyncTask的内部实现，适用的场景是？" class="headerlink" title="请介绍下AsyncTask的内部实现，适用的场景是？"></a>请介绍下AsyncTask的内部实现，适用的场景是？</h5><p>AsyncTask内部也是Handler机制来完成的，只不过Android提供了执行框架来提供线程池来执行相应地任务，因为线程池的大小问题，所以AsyncTask只应该用来执行耗时时间较短的任务，比如HTTP请求，大规模的下载和数据库的更改不适用于AsyncTask，因为会导致线程池堵塞，没有线程来执行其他的任务，导致的情形是会发生AsyncTask根本执行不了的问题。</p>
-<h2 id="AIDL、进程间通讯"><a href="#AIDL、进程间通讯" class="headerlink" title="AIDL、进程间通讯"></a>AIDL、进程间通讯</h2><h5 id="AndroidIPC通讯方式和使用场景"><a href="#AndroidIPC通讯方式和使用场景" class="headerlink" title="AndroidIPC通讯方式和使用场景"></a>AndroidIPC通讯方式和使用场景</h5><p><img src="http://7xvkm8.com1.z0.glb.clouddn.com/AndroidIPC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.png" alt=""></p>
+<h2 id="AIDL、进程间通讯"><a href="#AIDL、进程间通讯" class="headerlink" title="AIDL、进程间通讯"></a>AIDL、进程间通讯</h2><h5 id="AndroidIPC通讯方式和使用场景"><a href="#AndroidIPC通讯方式和使用场景" class="headerlink" title="AndroidIPC通讯方式和使用场景"></a>AndroidIPC通讯方式和使用场景</h5><p><img src="http://7xvkm8.com1.z0.glb.clouddn.com/AndroidIPC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.png" alt></p>
 <h5 id="Android如何使用多进程？"><a href="#Android如何使用多进程？" class="headerlink" title="Android如何使用多进程？"></a>Android如何使用多进程？</h5><p>我们的四大组件在AndroidManifest文件中注册的时候，只要声明<code>android:process</code>:接口让组件运行在单独的进程。如果是android:process=”:Remote”，以:开头的名字，则表示这是一个应用程序的私有进程，否则它是一个全局进程。私有进程的进程名称是会在冒号前自动加上包名，而全局进程则不会。</p>
 <p>好处：多进程显而易见的好处就是分担主进程的内存压力。我们的应用越做越大，内存越来越多，将一些独立的组件放到不同的进程，它就不占用主进程的内存空间了。当然还有其他好处，有心人会发现Android后台进程里有很多应用是多个进程的，因为它们要常驻后台，特别是即时通讯或者社交应用，不过现在多进程已经被用烂了。典型用法是在启动一个不可见的轻量级私有进程，在后台收发消息，或者做一些耗时的事情，或者开机启动这个进程，然后做监听等。还有就是防止主进程被杀守护进程，守护进程和主进程之间相互监视，有一方被杀就重新启动它。</p>
 <p>缺点：多占用了系统的空间，大家都这么用的话系统内存很容易占满而导致卡顿。消耗用户的电量。应用程序架构会变复杂，应为要处理多进程之间的通信。</p>
@@ -682,20 +682,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -801,7 +801,7 @@ NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
       notify: false,
       appId: 'owszTwWNkskIjjkFrAO3ErXj-gzGzoHsz',
       appKey: 'Ssyw9IJHW5cWHfzllcl2NHQh',
-      placeholder: "Just go go",
+      placeholder: "说点什么吧~",
       avatar: 'mm',
       meta: guest,
       pageSize: '10' || 10,

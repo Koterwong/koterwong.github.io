@@ -267,7 +267,7 @@
 <p>data目录主要包含了用户的数据信息。</p>
 <p>主要包括：<code>/data/app</code>,<code>/data/data</code>,<code>data/system</code>,<code>data/misc</code>主要包含大部分Wifi、VPN信息。</p>
 <h4 id="第二章-Android-开发工具"><a href="#第二章-Android-开发工具" class="headerlink" title="第二章 Android 开发工具"></a>第二章 Android 开发工具</h4><p>1、常用的ADB命令</p>
-<p><code>adb install  xxx.apk</code>安装应用，<code>adb uninstall xxx.apk</code>卸载应用。<br><code>adb push &lt;local&gt; &lt;remote&gt;</code> copy文件到手机，<local>为本地文件路经，<remote>手机端路径。<code>adb pull &lt;remote&gt; &lt;local&gt;</code>从手机端获取文件。</p>
+<p><code>adb install  xxx.apk</code>安装应用，<code>adb uninstall xxx.apk</code>卸载应用。<br><code>adb push &lt;local&gt; &lt;remote&gt;</code> copy文件到手机，<local>为本地文件路经，<remote>手机端路径。<code>adb pull &lt;remote&gt; &lt;local&gt;</code>从手机端获取文件。</remote></local></p>
 <h4 id="第三章-Android控件架构与自定义控件详解"><a href="#第三章-Android控件架构与自定义控件详解" class="headerlink" title="第三章 Android控件架构与自定义控件详解"></a>第三章 Android控件架构与自定义控件详解</h4><p>1.1、View的控件结构</p>
 <p>View控件的树结构：Android整个界面的控件是一个树形结构，即控件树。每棵树的顶部都有一个ViewParent对象，所有的交互事件都由它来同一调度和分配。上层控件负责下层控件的测量和绘制，以及传递交互事件。<code>findViewById</code>就是通过遍历树来查找元素。</p>
 <p>1.2、Android界面架构图</p>
@@ -547,8 +547,8 @@
 <p>(3)、优化布局层级，在Android中系统对View的测量，布局，绘制都是通过遍历View树操作的。因此，View树的高度不宜太高。Google在文档中建议View树的高度不宜超过10层。</p>
 <p>(4)、避免嵌套过多无用布局：</p>
 <ul>
-<li>使用”<include>“标签重用layout</li>
-<li>使用”<ViewStub>“实现view的延迟加载</li>
+<li>使用”<include>“标签重用layout</include></li>
+<li>使用”<ViewStub>“实现view的延迟加载</ViewStub></li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ViewStub mViewStub = findViewById(R.id.not_often_use);</span><br><span class="line">mViewStub.setVisible(View.VISIBLE);</span><br><span class="line"><span class="comment">//inflate </span></span><br><span class="line">View inflateView = mViewStub.inflate();</span><br><span class="line">inflateView.findViewById();</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
 
@@ -781,20 +781,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -900,7 +900,7 @@ NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
       notify: false,
       appId: 'owszTwWNkskIjjkFrAO3ErXj-gzGzoHsz',
       appKey: 'Ssyw9IJHW5cWHfzllcl2NHQh',
-      placeholder: "Just go go",
+      placeholder: "说点什么吧~",
       avatar: 'mm',
       meta: guest,
       pageSize: '10' || 10,
