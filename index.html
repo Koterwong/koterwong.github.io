@@ -180,6 +180,515 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://koterwong.top/2017/08/09/Mac%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Koterwong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Koterwong的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/08/09/Mac%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C/" class="post-title-link" itemprop="url">Mac常用命令行</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-09 20:52:23" itemprop="dateCreated datePublished" datetime="2017-08-09T20:52:23+08:00">2017-08-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <table>
+<thead>
+<tr>
+<th align="left"><strong>命令</strong></th>
+<th align="left">用法举例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>cd</code></td>
+<td align="left"></td>
+<td>切换目录 Change directory</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>cd ~</code></td>
+<td>切换到用户目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>cd ..</code></td>
+<td>切换到上一级目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>cd Desktop</code></td>
+<td>切换到目录Desktop（当前目录下）</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>cd /usr/bin</code></td>
+<td>切换到目录 /usr/bin (绝对目录)</td>
+</tr>
+<tr>
+<td align="left"><code>pwd</code></td>
+<td align="left"></td>
+<td>显示当前所在目录 print working directoty</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>pwd</code></td>
+<td>显示当前目录</td>
+</tr>
+<tr>
+<td align="left"><code>ls</code></td>
+<td align="left"></td>
+<td>显示目录下的文件 list directory</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>ls</code></td>
+<td>显示当前目录下的目录和文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>ls -l</code></td>
+<td>显示当前目录下的目录和文件详细列表</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>ls -lh</code></td>
+<td>显示当前目录下的目录和文件详细列表 并方便阅读</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>ls -lh /Users</code></td>
+<td>显示/Users下的所有目录和文件详细列表 并方便阅读</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>ls -G</code></td>
+<td>显示当前目录下的目录和文件名称 并用颜色区分文件、目录、链接</td>
+</tr>
+<tr>
+<td align="left"><code>mkdir</code></td>
+<td align="left"></td>
+<td>新建目录（新建文件夹）make directories</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>mkdir hello</code></td>
+<td>在当前目录下创建名称为hello的目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>mkdir Desktop/hello</code></td>
+<td>在桌面创建hello目录 (前提是当前所在目录为用户目录)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>mkdir -p hello/kitty</code></td>
+<td>新建一个hello，同时在hello目录里再新建一个kitty目录 -p代表递归建立目录</td>
+</tr>
+<tr>
+<td align="left"><code>touch</code></td>
+<td align="left"></td>
+<td>用来新建文件（touch的作用是修改文件时间，如果文件不存在，则创建文件）</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>touch a.txt</code></td>
+<td>在当前目录下新建一个a.txt文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>touch Desktop/a.docx</code></td>
+<td>在桌面新建一个a.docx的文件 (前提是当前所在目录为用户目录)</td>
+</tr>
+<tr>
+<td align="left">open</td>
+<td align="left"></td>
+<td>打开文件或目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">open a.txt</td>
+<td>打开a.txt文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">open safari.app</td>
+<td>打开safari.app (前提是当前所在目录为Applications)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">open ~/Downloads/</td>
+<td>打开下载目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">open .</td>
+<td>打开当前目录</td>
+</tr>
+<tr>
+<td align="left">mv</td>
+<td align="left"></td>
+<td>移动文件或目录（剪切）move</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">mv a.txt ..</td>
+<td>将当前目录下的a.txt文件移动到 上一级目录下</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">mv a.txt Desktop/</td>
+<td>将当前目录下的a.txt文件移动到桌面 (前提是当前所在目录为用户目录)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">mv a.txt b.txt</td>
+<td>将文件a.txt 更名为 b.txt</td>
+</tr>
+<tr>
+<td align="left">cp</td>
+<td align="left"></td>
+<td>复制文件或目录 copy</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">cp a.txt ~</td>
+<td>将文件a.txt 复制到用户目录下</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">cp a.txt ~/b.txt</td>
+<td>将文件a.txt 复制到用户目录下 并改名为b.txt</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">cp -r hello ..</td>
+<td>将目录hello复制到上一级目录下 注意-r的使用 -r代表复制的对象为目录</td>
+</tr>
+<tr>
+<td align="left">rm</td>
+<td align="left"></td>
+<td>删除文件或者目录 remove (新手运行删除命令请格外小心)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">rm a.txt</td>
+<td>删除文件a.txt</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">rm -r hello</td>
+<td>删除目录hello</td>
+</tr>
+<tr>
+<td align="left">ln</td>
+<td align="left"></td>
+<td>给文件或者目录建立链接 links</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">ln -s /Applications/QQ.app ~/Desktop/</td>
+<td>给QQ建立软链接文件到桌面（相当于windows下的发送QQ的快捷方式到桌面）</td>
+</tr>
+<tr>
+<td align="left">man</td>
+<td align="left"></td>
+<td>查看命令手册 manual</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">man ls</td>
+<td>查看ls命令的手册</td>
+</tr>
+<tr>
+<td align="left">echo</td>
+<td align="left"></td>
+<td>输出命令</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">echo ‘ls’</td>
+<td>输出字符串ls</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">echo<code>ls</code></td>
+<td>输出ls命令执行结果</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">echo $(ls)</td>
+<td>输出ls命令执行结果</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">echo -e “hello\n”</td>
+<td>输出hello并换行 -e代表支持输出控制字符 包括\a警告音 \n换行 \t制表符 等</td>
+</tr>
+<tr>
+<td align="left">cat</td>
+<td align="left"></td>
+<td>输出文件内容</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">cat a.txt</td>
+<td>显示文件a.txt的所有内容</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">cat -b a.txt</td>
+<td>显示文件a.txt的所有内容 并显示行号</td>
+</tr>
+<tr>
+<td align="left">head</td>
+<td align="left"></td>
+<td>显示文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">head -n 5 a.txt</td>
+<td>显示文件a.txt的前5行</td>
+</tr>
+<tr>
+<td align="left">sh</td>
+<td align="left"></td>
+<td>运行shell脚本</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">sh a.sh</td>
+<td>运行脚本文件a.sh （前提是当前目录下存在a.sh文件，并且文件有可执行权限）</td>
+</tr>
+<tr>
+<td align="left">find</td>
+<td align="left"></td>
+<td>查找命令</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find ~/Downloads/ -name a*</td>
+<td>查找下载目录下的所有a开头的文件和目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find ~/Desktop/ -name a.txt</td>
+<td>查找桌面名字叫做a.txt的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find ~/Desktop/*</td>
+<td>查找桌面所有文件和目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -name *.txt</td>
+<td>查找当前目录下的txt结尾的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -atime -1</td>
+<td>查找当前目录下1天内被访问过的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -atime +2</td>
+<td>查找当前目录下2天前被访问过的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -mtime -2</td>
+<td>搜索当前目录2天内被修改过的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -ctime -2</td>
+<td>搜索当前目录2天内文件属性被修改的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -size -64k</td>
+<td>查找当前目录小于64k的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -perm 755</td>
+<td>查找当前目录有执行权限的文件</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -size +2k -a -size -50k -exec ls -lh {} ;</td>
+<td>查询到的文件用ls -lh显示</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">find . -inum 234533 -exec rm -rf {} ;</td>
+<td>查询i节点文件为262541的文件 直接删除</td>
+</tr>
+<tr>
+<td align="left">whereis</td>
+<td align="left"></td>
+<td>查找命令所在目录</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">whereis ls</td>
+<td>查找ls命令所在目录</td>
+</tr>
+<tr>
+<td align="left">which</td>
+<td align="left"></td>
+<td>查找命令所在目录 可以看别名</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">which cd</td>
+<td>查找ls命令所在目录</td>
+</tr>
+<tr>
+<td align="left">grep</td>
+<td align="left"></td>
+<td>字符串搜索命令 将显示字符串匹配的所在行所有内容</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">grep “hello” a.txt</td>
+<td>搜索a.txt文件中包含字符串”hello”的所有行</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">grep -v “hello” a.txt</td>
+<td>搜索a.txt文件中不包含字符串”hello”的所有行</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">grep -n “hello” a.txt</td>
+<td>搜索a.txt文件中包含字符串”hello”的所有行 并显示行号</td>
+</tr>
+<tr>
+<td align="left">w</td>
+<td align="left"></td>
+<td>查看当前用户登录信息及相关系统信息</td>
+</tr>
+<tr>
+<td align="left">who</td>
+<td align="left"></td>
+<td>查看当前用户登录信息</td>
+</tr>
+<tr>
+<td align="left">last</td>
+<td align="left"></td>
+<td>查看历史登录信息</td>
+</tr>
+<tr>
+<td align="left">alias</td>
+<td align="left"></td>
+<td>给命令起别名（临时生效，如果需要持久生效，需要把命令写在用户配置文件中）</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">alias ll=”ls -l”</td>
+<td>用ll代替ls -l命令</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">alias grep=”grep –color=auto”</td>
+<td>作用为grep使用时 直接附带参数–color=auto 即匹配内容用颜色标记出</td>
+</tr>
+<tr>
+<td align="left">history</td>
+<td align="left"></td>
+<td>查看历史输入命令</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">history -c</td>
+<td>清空历史命令</td>
+</tr>
+<tr>
+<td align="left">netstat</td>
+<td align="left"></td>
+<td>查看网络信息</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">netstat -an</td>
+<td>查看网络连接及网络接口信息</td>
+</tr>
+<tr>
+<td align="left">管道</td>
+<td align="left"></td>
+<td>命令结果的传递 用竖线 | 分隔命令</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">命令1 | 命令2</td>
+<td>命令1正确执行的结果 作为命令2的操作对象</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">head -n 4 a.txt | grep “hello”</td>
+<td>输出a.txt文件前4行的内容，然后在结果中找出所有包含hello的行</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://koterwong.top/2017/05/21/%E7%BB%88%E7%AB%AF%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8-Vim/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -913,84 +1422,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://koterwong.top/2015/08/09/%E8%B7%B3%E8%BF%87Flash%E7%95%8C%E9%9D%A2%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Koterwong">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Koterwong的随笔">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2015/08/09/%E8%B7%B3%E8%BF%87Flash%E7%95%8C%E9%9D%A2%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/" class="post-title-link" itemprop="url">跳过Flash界面的正确姿势</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2015-08-09 00:00:00" itemprop="dateCreated datePublished" datetime="2015-08-09T00:00:00+08:00">2015-08-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-            </span>
-
-          
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一般情况下，用户打开我们的App第一屏显示的是SplashActivity或者WelcomeActivity，在这个页面中我们一般用于展示我们App的基本信息和公司Log等，有时候也会获取一些广告信息和基本的资源操作等。但是现在有一个场景，用户不小心点击了两次返回键（点击两次返回键退出）退出了我们的App，在重新打开时，显示的第一屏仍是SplashActivity，这对用户来说体验是很不友好的。我们现在的解决办法是<code>moveTaskToBack</code>，没错就是只有这个方法。它的实现如下：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2015/08/09/%E8%B7%B3%E8%BF%87Flash%E7%95%8C%E9%9D%A2%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1063,7 +1494,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1076,7 +1507,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

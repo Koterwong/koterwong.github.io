@@ -55,7 +55,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://koterwong.top/.top//vim%E7%9A%84%E6%A8%A1%E5%BC%8F.png">
 <meta property="article:published_time" content="2017-05-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-01-07T10:00:54.594Z">
+<meta property="article:modified_time" content="2020-01-07T10:02:03.308Z">
 <meta property="article:author" content="Koterwong">
 <meta property="article:tag" content="Vim">
 <meta property="article:tag" content="编辑器">
@@ -254,8 +254,7 @@
 <a id="more"></a>
 
 <p><strong>vim = vi improved</strong>，vim<code>是从</code>vi` 发展出来的一个文本编辑器，支持 <strong>代码补全</strong>、<strong>编译</strong> 及 <strong>错误跳转</strong> 等方便编程的功能特别丰富，在程序员中被广泛使用，被称为 <strong>编辑器之神</strong></p>
-<p>###vim的特点：</p>
-<ul>
+<h3 id="vim的特点："><a href="#vim的特点：" class="headerlink" title="vim的特点："></a>vim的特点：</h3><ul>
 <li>没有图形界面 的 功能强大 的编辑器</li>
 <li>只能是编辑 文本内容，不能对字体、段落进行排版</li>
 <li>不支持鼠标操作</li>
@@ -277,18 +276,15 @@
 <li>每一个要使用 Linux 的程序员，都应该或多或少的学习一些 <code>vi</code> 的常用命令</li>
 </ul>
 </blockquote>
-<h2 id="vim的三种工作模式"><a href="#vim的三种工作模式" class="headerlink" title="vim的三种工作模式"></a><code>vim</code>的三种工作模式</h2><p>###命令模式</p>
-<ul>
+<h2 id="vim的三种工作模式"><a href="#vim的三种工作模式" class="headerlink" title="vim的三种工作模式"></a><code>vim</code>的三种工作模式</h2><h3 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h3><ul>
 <li>打开文件即进入命令模式（也称为Normal模式），是使用 <code>vim</code> 的 入口。</li>
 <li>通过 命令 对文件进行常规的编辑操作，例如：定位、翻页、复制、粘贴、删除……</li>
 </ul>
-<p>###末行模式 —— 执行 保存、退出 等操作 </p>
-<ul>
+<h3 id="末行模式-——-执行-保存、退出-等操作"><a href="#末行模式-——-执行-保存、退出-等操作" class="headerlink" title="末行模式 —— 执行 保存、退出 等操作"></a>末行模式 —— 执行 保存、退出 等操作</h3><ul>
 <li>要退出 <code>vim</code> 返回到控制台，需要在末行模式下输入命令</li>
 <li>在命令模式下输入<code>:</code>会进入末行模式，在末行模式下输入<code>q!</code>可以在不保存当前工作的情况下强行退出vim</li>
 </ul>
-<p>###编辑模式（Insert模式）</p>
-<ul>
+<h3 id="编辑模式（Insert模式）"><a href="#编辑模式（Insert模式）" class="headerlink" title="编辑模式（Insert模式）"></a>编辑模式（Insert模式）</h3><ul>
 <li>屏幕下方出现<code>-- INSERT --</code>提示</li>
 <li>在编辑模式下按下<code>Esc</code>会回到命令模式</li>
 <li>在命令模式下输入 <code>i</code> 等(后面介绍)进入编辑模式</li>
@@ -299,8 +295,7 @@
 <blockquote>
 <p>在TouchBar的Mac上可使用<code>control+[</code>代替<code>Ees</code>退出到命令模式</p>
 </blockquote>
-<p>##<strong>vim</strong>基础操作</p>
-<p>参数设定：进入末行模式后可以对vim进行设定。</p>
+<h2 id="vim基础操作"><a href="#vim基础操作" class="headerlink" title="vim基础操作"></a><strong>vim</strong>基础操作</h2><p>参数设定：进入末行模式后可以对vim进行设定。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">设置Tab键的空格数：set ts&#x3D;4</span><br><span class="line">设置显示&#x2F;不显示行号：set nu &#x2F; set nonu</span><br><span class="line">设置启用&#x2F;关闭高亮语法：syntax on &#x2F; syntax off</span><br><span class="line">设置显示标尺（光标所在的行和列）： set ruler</span><br><span class="line">设置启用&#x2F;关闭搜索结果高亮：set hls &#x2F; set nohls</span><br></pre></td></tr></table></figure>
 
 <p>命令模式下光标操作:</p>
@@ -352,7 +347,10 @@
     <a href="/2016/05/03/%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2%E7%AC%AC%E5%85%AD%E7%AB%A0Drawable/" rel="prev" title="Android开发艺术探索第六章-Drawable">
       <i class="fa fa-chevron-left"></i> Android开发艺术探索第六章-Drawable
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/09/Mac%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C/" rel="next" title="Mac常用命令行">
+      Mac常用命令行 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -413,7 +411,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vi和vim"><span class="nav-number">1.</span> <span class="nav-text">vi和vim</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#学习-vim-的目的"><span class="nav-number">1.1.</span> <span class="nav-text">学习 vim 的目的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim的三种工作模式"><span class="nav-number">2.</span> <span class="nav-text">vim的三种工作模式</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vi和vim"><span class="nav-number">1.</span> <span class="nav-text">vi和vim</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vim的特点："><span class="nav-number">1.1.</span> <span class="nav-text">vim的特点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#学习-vim-的目的"><span class="nav-number">1.2.</span> <span class="nav-text">学习 vim 的目的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim的三种工作模式"><span class="nav-number">2.</span> <span class="nav-text">vim的三种工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令模式"><span class="nav-number">2.1.</span> <span class="nav-text">命令模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#末行模式-——-执行-保存、退出-等操作"><span class="nav-number">2.2.</span> <span class="nav-text">末行模式 —— 执行 保存、退出 等操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑模式（Insert模式）"><span class="nav-number">2.3.</span> <span class="nav-text">编辑模式（Insert模式）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim基础操作"><span class="nav-number">3.</span> <span class="nav-text">vim基础操作</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -429,7 +427,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -442,7 +440,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
